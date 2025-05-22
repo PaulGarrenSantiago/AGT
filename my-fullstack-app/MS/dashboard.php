@@ -65,28 +65,28 @@
     <h2>Trending Podcasts</h2>
     <div class="grid">
       <div class="card">
-        <img src="pod1.jpg" alt="Podcast Talk Show with Juan Luna" class="podcast-cover" />
+        <img src="img/pod1.jpg" alt="Podcast Talk Show with Juan Luna" class="podcast-cover" />
         <hr>
         <h3>Podcast Talk Show with Juan Luna</h3>
         <p>April 5, 2023 • 21.9k listens</p>
         <a href="episode.html">View</a>
       </div>
       <div class="card">
-        <img src="pod2.jpg" alt="Positive Lifestyle" class="podcast-cover" />
+        <img src="img/pod2.jpg" alt="Positive Lifestyle" class="podcast-cover" />
         <hr>
         <h3>Positive Lifestyle</h3>
         <p>April 5, 2023 • 10k listens</p>
         <a href="episode.html">View</a>
       </div>
       <div class="card">
-        <img src="pod3.jpg" alt="Live Podcast" class="podcast-cover" />
+        <img src="img/pod3.jpg" alt="Live Podcast" class="podcast-cover" />
         <hr>
         <h3>Live Podcast</h3>
         <p>April 5, 2023 • 55k listens</p>
         <a href="episode.html">View</a>
       </div>
       <div class="card">
-        <img src="pod4.png" alt="Morning Motivation" class="podcast-cover" />
+        <img src="img/pod4.png" alt="Morning Motivation" class="podcast-cover" />
         <hr>
         <h3>Morning Motivation</h3>
         <p>April 5, 2023 • 8k listens</p>
