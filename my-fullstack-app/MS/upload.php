@@ -2,249 +2,308 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Settings - Anything Goes Tambayan</title>
+  <title>Upload Podcast - Anything Goes Tambayan</title>
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Add Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="../firebase-config.js"></script>
+  
+  <!-- Add authentication check -->
+  <script>
+    // Check authentication state before page loads
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (!user) {
+        // User is not logged in, redirect to login page
+        window.location.href = 'login.php';
+      }
+    });
+  </script>
+
   <style>
     body {
       margin: 0;
       font-family: 'Montserrat', Arial, sans-serif;
       background: #000;
       color: #fff;
-      height: 100vh;
-      overflow: hidden; /* Prevent scrolling */
-    }
-    .header {
-      background: linear-gradient(90deg, rgba(230, 203, 28, 0.76) 0%, rgba(45, 50, 194, 0.72) 47%, rgba(204, 35, 35, 0.79) 100%);
-      padding: 24px 0 12px 0;
-      text-align: left;
-      box-shadow: 0 2px 16px 0 rgba(0,0,0,0.18);
-    }
-    .header-title {
-      font-size: 2.7rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      margin-left: 48px;
-      text-shadow: 1px 2px 8px #222, 0 1px 0 #fff2;
-    }
-    .header-title .goes { color: #3ec6ff; }
-    .header-title .tambayan { color: #ff2d2d; }
-    .header-desc {
-      font-size: 1.08rem;
-      margin-left: 52px;
-      margin-top: 7px;
-      color: #fff;
-      opacity: 0.92;
-      letter-spacing: 0.5px;
-      text-shadow: 0 1px 6px #222;
-    }
-    .container {
-      height: 100vh; /* Fill viewport */
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: 20px;
       position: relative;
-      overflow: hidden; /* Prevent scrollbars */
     }
+
     .upload-card {
-      width: 100%;
-      max-width: 600px;         /* Increased from 400px */
-      box-sizing: border-box;
-      padding: 3rem 3rem;       /* Increased padding */
-      border-radius: 1.2rem;
-      box-shadow: 0 2px 24px rgba(0,0,0,0.22);
-      background: #fff;
-      color: #222;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      z-index: 1;
-      margin-bottom: 100px;
-    }
-    .form-label {
-      font-weight: 500;
-    }
-    .btn-upload {
-      background: #007bff;
-      color: #fff;
-      font-weight: 500;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 0;
-      margin-top: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-upload:hover {
-      background: #0056b3;
-    }
-    .back-btn {
-      position: fixed;          /* Changed from absolute */
-      bottom: 40px;
-      right: 60px;
-      background: linear-gradient(90deg, #ff5858 0%, #ff2d2d 100%);
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      padding: 14px 48px 14px 32px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-      box-shadow: 0 4px 18px #ff2d2d44, 0 2px 10px #ff2d2d22;
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      outline: none;
-      z-index: 100;
-    }
-    .back-btn i {
-      font-size: 1.3rem;
-      margin-right: 8px;
-      transition: transform 0.2s;
-    }
-    .back-btn:hover {
-      background: linear-gradient(90deg, #ff7b7b 0%, #c1272d 100%);
-      box-shadow: 0 6px 24px #c1272d66;
-      transform: translateY(-2px) scale(1.04);
-    }
-    .back-btn:active {
-      transform: scale(0.98);
-    }
-    .form-title {
-      color: #0a2c5e;
-      font-size: 1.2rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 1.2rem;
-    }
-    .upload-box {
-      border: 2px solid #bbb;
+      background: white;
+      padding: 2rem;
       border-radius: 8px;
-      padding: 1.5rem 0 1rem 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      margin-bottom: 1.1rem;
-      transition: border-color 0.2s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: relative;
     }
-    .upload-box:hover {
-      border-color: #007bff;
-    }
-    .upload-icon {
-      font-size: 2.8rem;
-      color: #222;
-      margin-bottom: 0.3rem;
-    }
-    .upload-text {
-      color: #222;
-      font-size: 1.1rem;
-      font-weight: 500;
-    }
-    .form-input {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      margin-bottom: 1rem;
-      border: 1.5px solid #bbb;
-      border-radius: 7px;
-      font-size: 1rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
-      background: #fff;
-      color: #222;
-      resize: none;
-    }
-    .form-input:focus {
-      border-color: #007bff;
-    }
-    .btn-publish {
-      width: 100%;
-      padding: 0.8rem 0;
-      border: none;
-      border-radius: 7px;
-      background: linear-gradient(90deg, #4be1ec 0%, #1a6dff 100%);
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      margin-top: 0.2rem;
-    }
-    .btn-publish:hover {
-      background: linear-gradient(90deg, #1a6dff 0%, #4be1ec 100%);
-      transform: scale(1.03);
-    }
+
     .close-btn {
       position: absolute;
-      top: 18px;
-      right: 18px;
+      top: 10px;
+      right: 10px;
       background: none;
       border: none;
-      color: #222;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       cursor: pointer;
+      color: #666;
+      padding: 5px;
       z-index: 10;
-      padding: 4px 8px;
-      transition: color 0.2s, background 0.2s;
     }
+
     .close-btn:hover {
-      color: #fff;
-      background: #ff2d2d;
-      border-radius: 50%;
+      color: #333;
     }
-    @media (max-width: 900px) {
-      .container {
+
+    .form-title {
+      color: #0a2c5e;
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: bold;
+    }
+
+    .upload-boxes {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 2rem;
+    }
+
+    .upload-box {
+      flex: 1;
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .upload-box:hover {
+      border-color: #0a2c5e;
+    }
+
+    .upload-icon {
+      font-size: 2rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-text {
+      color: #666;
+      font-size: 1rem;
+    }
+
+    .file-name {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: #666;
+      word-break: break-all;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea.form-input {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .category-select {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: white;
+      color: #333;
+    }
+
+    .btn-publish {
+      width: 100%;
+      padding: 0.8rem;
+      background: #0a2c5e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .btn-publish:hover {
+      background: #0d3d7a;
+    }
+
+    #uploadStatus {
+      text-align: center;
+      margin: 1rem 0;
+      color: #666;
+    }
+
+    .error {
+      color: #dc3545;
+    }
+
+    @media (max-width: 480px) {
+      .upload-boxes {
         flex-direction: column;
-        justify-content: flex-start;
-        align-items: stretch;
-        min-height: unset;
-        padding: 30px 0;
       }
+      
+      .container {
+        margin: 10px;
+      }
+      
       .upload-card {
-        margin: 40px auto 0 auto;
-        max-width: 98vw;        /* Responsive for mobile */
-        padding: 1.5rem 0.5rem;
-      }
-      .back-btn {
-        right: 20px;
-        bottom: 20px;
-        padding: 12px 24px;
-        font-size: 1rem;
+        padding: 1.5rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="header-title">
-      <span style="color:#ffe85c;">ANYTHING</span> <span class="goes">GOES</span> <span class="tambayan">TAMBAYAN</span>
-    </div>
-    <div class="header-desc">
-      Your Hangout Spot for Chill Talks, Real Stories, and Anything Under the Sun!
-    </div>
-  </div>
   <div class="container">
-    <div class="upload-card" style="position:relative;">
-      <!-- X Button -->
-      <button class="close-btn" type="button" onclick="window.location.href='dashboard.html'" aria-label="Close">
-        <i class="fa fa-times"></i>
+    <div class="upload-card">
+      <button class="close-btn" type="button" onclick="window.location.href='dashboard.php'" aria-label="Close">
+        ×
       </button>
       <h3 class="form-title">Upload your podcast here.</h3>
-      <form action="upload.php" method="POST" enctype="multipart/form-data">
-        <label for="fileInput" class="upload-box">
-          <i class="fa fa-upload upload-icon"></i>
-          <div class="upload-text">Upload</div>
-          <input type="file" id="fileInput" name="file" required style="display:none;">
-        </label>
-        <input type="text" class="form-input" name="title" placeholder="Title..." required>
-        <textarea class="form-input" name="description" placeholder="Description..." rows="2" required></textarea>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <div class="upload-boxes">
+          <label class="upload-box">
+            <i class="fa fa-music upload-icon"></i>
+            <div class="upload-text">Upload Audio</div>
+            <div id="audioFileName" class="file-name"></div>
+            <input type="file" id="audioFile" name="audioFile" accept="audio/*" required style="display:none;">
+          </label>
+          <label class="upload-box">
+            <i class="fa fa-image upload-icon"></i>
+            <div class="upload-text">Upload Thumbnail</div>
+            <div id="imageFileName" class="file-name"></div>
+            <input type="file" id="imageFile" name="imageFile" accept="image/*" required style="display:none;">
+          </label>
+        </div>
+        <input type="text" class="form-input" name="title" id="title" placeholder="Title..." required>
+        <textarea class="form-input" name="description" id="description" placeholder="Description..." required></textarea>
+        <select class="category-select" name="category" id="category" required>
+          <option value="">Select Category...</option>
+          <option value="comedy">Comedy</option>
+          <option value="education">Education</option>
+          <option value="lifestyle">Lifestyle</option>
+          <option value="music">Music</option>
+          <option value="news">News</option>
+          <option value="sports">Sports</option>
+          <option value="technology">Technology</option>
+        </select>
+        <div id="uploadStatus"></div>
         <button type="submit" class="btn-publish">Publish</button>
       </form>
     </div>
-    <button class="back-btn" onclick="window.location.href='dashboard.html'"><i class="fa fa-arrow-left"></i> Back</button>
   </div>
+
+  <script>
+    // Display file names when selected
+    document.getElementById('audioFile').addEventListener('change', function(e) {
+      document.getElementById('audioFileName').textContent = e.target.files[0]?.name || '';
+    });
+
+    document.getElementById('imageFile').addEventListener('change', function(e) {
+      document.getElementById('imageFileName').textContent = e.target.files[0]?.name || '';
+    });
+
+    // Handle form submission
+    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const statusDiv = document.getElementById('uploadStatus');
+      statusDiv.textContent = 'Uploading...';
+
+      try {
+        // Check authentication first
+        const user = firebase.auth().currentUser;
+        if (!user) {
+          // If not authenticated, try to wait for auth state to be ready
+          await new Promise((resolve, reject) => {
+            const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+              unsubscribe();
+              if (user) {
+                resolve(user);
+              } else {
+                reject(new Error('Please log in to upload podcasts'));
+              }
+            });
+          });
+        }
+
+        const formData = new FormData();
+        formData.append('audioFile', document.getElementById('audioFile').files[0]);
+        formData.append('imageFile', document.getElementById('imageFile').files[0]);
+
+        // Upload files to server
+        const response = await fetch('upload_handler.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) throw new Error(result.message || 'Upload failed');
+
+        // Get current user again to ensure we're still authenticated
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) throw new Error('Authentication lost during upload. Please try again.');
+
+        // Save to Firestore
+        const db = firebase.firestore();
+        const now = firebase.firestore.Timestamp.now();
+        
+        await db.collection('podcasts').add({
+          title: document.getElementById('title').value,
+          description: document.getElementById('description').value,
+          category: document.getElementById('category').value,
+          audioURL: result.audioURL,
+          imageURL: result.imageURL,
+          createdAt: now,
+          updatedAt: now,
+          userId: currentUser.uid
+        });
+
+        statusDiv.textContent = 'Upload successful!';
+        statusDiv.className = '';
+        
+        // Redirect to dashboard after short delay
+        setTimeout(() => {
+          window.location.href = 'dashboard.php';
+        }, 1500);
+
+      } catch (error) {
+        console.error('Upload error:', error);
+        statusDiv.textContent = error.message;
+        statusDiv.className = 'error';
+        
+        // If it's an authentication error, redirect to login
+        if (error.message.toLowerCase().includes('authentication') || error.message.toLowerCase().includes('log in')) {
+          setTimeout(() => {
+            window.location.href = 'login.php';
+          }, 2000);
+        }
+      }
+    });
+  </script>
 </body>
 </html>

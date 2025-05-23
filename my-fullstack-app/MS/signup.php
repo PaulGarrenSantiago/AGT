@@ -212,11 +212,20 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
 </html>
 
 <script>
+  // Function to generate a unique userId
+  function generateUserId() {
+    const timestamp = new Date().getTime();
+    const random = Math.floor(Math.random() * 10000);
+    return `USER${timestamp}${random}`;
+  }
+
   // Email/Password Signup
   document.getElementById('signup-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
+    const userId = generateUserId();
+
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -230,6 +239,7 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
           // Save to Firestore
           const db = firebase.firestore();
           return db.collection("users").doc(user.uid).set({
+            userId: userId,
             firstName: firstName,
             lastName: lastName,
             username: username,
@@ -247,43 +257,46 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
 
   // Google Signup/Login
   document.getElementById('google-signup-btn').addEventListener('click', function() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user;
-      const db = firebase.firestore();
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const userId = generateUserId();
 
-      // Split displayName into first and last name if possible
-      let firstName = "";
-      let lastName = "";
-      if (user.displayName) {
-        const parts = user.displayName.split(" ");
-        firstName = parts[0];
-        lastName = parts.slice(1).join(" ");
-      }
+    firebase.auth().signInWithPopup(provider)
+      .then((result) => {
+        const user = result.user;
+        const db = firebase.firestore();
 
-      // Use the part before @ in email as username
-      let username = "";
-      if (user.email) {
-        username = user.email.split('@')[0];
-      }
+        // Split displayName into first and last name if possible
+        let firstName = "";
+        let lastName = "";
+        if (user.displayName) {
+          const parts = user.displayName.split(" ");
+          firstName = parts[0];
+          lastName = parts.slice(1).join(" ");
+        }
 
-      // Use Google photoURL or default image
-      let photoURL = user.photoURL ? user.photoURL : "img/default-image.jpg";
+        // Use the part before @ in email as username
+        let username = "";
+        if (user.email) {
+          username = user.email.split('@')[0];
+        }
 
-      return db.collection("users").doc(user.uid).set({
-        firstName: firstName,
-        lastName: lastName,
-        username: username,
-        email: user.email,
-        photoURL: photoURL
+        // Use Google photoURL or default image
+        let photoURL = user.photoURL ? user.photoURL : "img/default-image.jpg";
+
+        return db.collection("users").doc(user.uid).set({
+          userId: userId,
+          firstName: firstName,
+          lastName: lastName,
+          username: username,
+          email: user.email,
+          photoURL: photoURL
+        });
+      })
+      .then(() => {
+        window.location.href = "dashboard.php";
+      })
+      .catch((error) => {
+        document.getElementById('signup-error').textContent = error.message;
       });
-    })
-    .then(() => {
-      window.location.href = "dashboard.php";
-    })
-    .catch((error) => {
-      document.getElementById('signup-error').textContent = error.message;
-    });
-});
+  });
 </script>

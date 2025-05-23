@@ -109,94 +109,6 @@
       background: #454a50;
       color: #222;
     }
-    /* Upload Modal Styles */
-#uploadModal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 9999;
-  align-items: center;
-  justify-content: center;
-}
-
-.upload-modal-content {
-  background: #fff;
-  color: #222;
-  border-radius: 1.2rem;
-  max-width: 600px;
-  width: 90vw;
-  padding: 2rem;
-  position: relative;
-}
-
-#closeUploadModal {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  background: none;
-  border: none;
-  font-size: 1.4rem;
-  cursor: pointer;
-}
-
-.form-title {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.8rem;
-  text-align: center;
-}
-
-.upload-box {
-  border: 2px solid #bbb;
-  border-radius: 8px;
-  padding: 1.5rem 0 1rem 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; /* Add this */
-  cursor: pointer;
-  margin-bottom: 1.1rem;
-  transition: border-color 0.2s;
-  background: #fff;
-  min-height: 130px; /* Ensures enough space for icon */
-}
-
-.upload-box:hover {
-  background: rgba(96, 165, 250, 0.1);
-}
-
-.upload-text {
-  font-size: 1rem;
-  color: #60a5fa;
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.8rem;
-  margin-bottom: 1.2rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-}
-
-.btn-publish {
-  background: #60a5fa;
-  color: #fff;
-  border: none;
-  padding: 0.8rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.2s;
-}
-
-.btn-publish:hover {
-  background: #3b82f6;
-}
-
     </style>
 </head>
 <body>
@@ -229,26 +141,6 @@
   </header>
     </header>
 
-    <!-- Upload Modal Overlay -->
-<div id="uploadModal">
-  <div class="upload-modal-content">
-    <button id="closeUploadModal" aria-label="Close">
-      <i class="fa fa-times"></i>
-    </button>
-    <h3 class="form-title">Upload your podcast here.</h3>
-    <form action="upload.php" method="POST" enctype="multipart/form-data">
-      <label for="fileInput" class="upload-box">
-        <i class="fa fa-upload upload-icon"></i>
-        <div class="upload-text">Upload</div>
-        <input type="file" id="fileInput" name="file" required style="display:none;">
-      </label>
-      <input type="text" class="form-input" name="title" placeholder="Title..." required>
-      <textarea class="form-input" name="description" placeholder="Description..." rows="2" required></textarea>
-      <button type="submit" class="btn-publish">Publish</button>
-    </form>
-  </div>
-</div>
-
     <!-- Add Firebase SDKs if not already present -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -275,27 +167,6 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
   });
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  // Show modal when upload button is clicked
-  const uploadBtn = document.querySelector('a[title="Upload"]');
-  const uploadModal = document.getElementById('uploadModal');
-  const closeUploadModal = document.getElementById('closeUploadModal');
-  if (uploadBtn && uploadModal && closeUploadModal) {
-    uploadBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      uploadModal.style.display = 'flex';
-    });
-    closeUploadModal.addEventListener('click', function() {
-      uploadModal.style.display = 'none';
-    });
-    // Optional: close modal when clicking outside the form
-    uploadModal.addEventListener('click', function(e) {
-      if (e.target === uploadModal) uploadModal.style.display = 'none';
-    });
-  }
 });
 </script>
 </body>
