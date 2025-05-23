@@ -220,39 +220,42 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
   }
 
   // Email/Password Signup
-  document.getElementById('signup-form').addEventListener('submit', function(e) {
+  document.getElementById('signup-form').addEventListener('submit', async function(e) {
     e.preventDefault();
+    
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
-    const userId = generateUserId();
+    const username = document.getElementById('username').value;
+    const firstName = document.getElementById('first-name').value;
+    const lastName = document.getElementById('last-name').value;
 
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        const firstName = document.getElementById('first-name').value;
-        const lastName = document.getElementById('last-name').value;
-        const username = document.getElementById('username').value;
+    try {
+      // Create user in Firebase Auth
+      const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
 
-        user.updateProfile({
-          displayName: firstName + ' ' + lastName
-        }).then(() => {
-          // Save to Firestore
-          const db = firebase.firestore();
-          return db.collection("users").doc(user.uid).set({
-            userId: userId,
-            firstName: firstName,
-            lastName: lastName,
-            username: username,
-            email: email,
-            photoURL: "img/default-image.jpg"
-          });
-        }).then(() => {
-          window.location.href = "dashboard.php";
-        });
-      })
-      .catch((error) => {
-        document.getElementById('signup-error').textContent = error.message;
+      // Create user profile in Firestore
+      const db = firebase.firestore();
+      await db.collection('users').doc(user.uid).set({
+        email: email,
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        photoURL: 'img/default-avatar.png', // Default avatar
+        createdAt: firebase.firestore.Timestamp.now()
       });
+
+      // Update the user's display name in Firebase Auth
+      await user.updateProfile({
+        displayName: username
+      });
+
+      // Redirect to dashboard after successful signup
+      window.location.href = 'dashboard.php';
+    } catch (error) {
+      console.error('Error:', error);
+      document.getElementById('signup-error').textContent = error.message;
+    }
   });
 
   // Google Signup/Login

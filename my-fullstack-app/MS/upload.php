@@ -155,7 +155,21 @@
     #uploadStatus {
       text-align: center;
       margin: 1rem 0;
-      color: #666;
+      padding: 0.8rem;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    #uploadStatus.error {
+      background-color: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    #uploadStatus.success {
+      background-color: #dcfce7;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
     }
 
     .error {
@@ -237,22 +251,33 @@
         // Check authentication first
         const user = firebase.auth().currentUser;
         if (!user) {
-          // If not authenticated, try to wait for auth state to be ready
-          await new Promise((resolve, reject) => {
-            const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-              unsubscribe();
-              if (user) {
-                resolve(user);
-              } else {
-                reject(new Error('Please log in to upload podcasts'));
-              }
-            });
+          throw new Error('Please log in to upload podcasts');
+        }
+
+        // Check if user profile exists
+        const db = firebase.firestore();
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        
+        if (!userDoc.exists) {
+          // Create a basic profile if it doesn't exist
+          await db.collection('users').doc(user.uid).set({
+            email: user.email,
+            username: user.displayName || 'Anonymous User',
+            photoURL: user.photoURL || 'img/default-avatar.png',
+            createdAt: firebase.firestore.Timestamp.now()
           });
         }
 
         const formData = new FormData();
-        formData.append('audioFile', document.getElementById('audioFile').files[0]);
-        formData.append('imageFile', document.getElementById('imageFile').files[0]);
+        const audioFile = document.getElementById('audioFile').files[0];
+        const imageFile = document.getElementById('imageFile').files[0];
+
+        if (!audioFile || !imageFile) {
+          throw new Error('Please select both audio and image files');
+        }
+
+        formData.append('audioFile', audioFile);
+        formData.append('imageFile', imageFile);
 
         // Upload files to server
         const response = await fetch('upload_handler.php', {
@@ -264,27 +289,32 @@
 
         if (!response.ok) throw new Error(result.message || 'Upload failed');
 
-        // Get current user again to ensure we're still authenticated
-        const currentUser = firebase.auth().currentUser;
-        if (!currentUser) throw new Error('Authentication lost during upload. Please try again.');
+        // Get user data
+        const userData = userDoc.exists ? userDoc.data() : {
+          username: user.displayName || 'Anonymous User',
+          photoURL: user.photoURL || 'img/default-avatar.png'
+        };
 
         // Save to Firestore
-        const db = firebase.firestore();
-        const now = firebase.firestore.Timestamp.now();
-        
-        await db.collection('podcasts').add({
+        const podcastRef = await db.collection('podcasts').add({
           title: document.getElementById('title').value,
           description: document.getElementById('description').value,
           category: document.getElementById('category').value,
           audioURL: result.audioURL,
           imageURL: result.imageURL,
-          createdAt: now,
-          updatedAt: now,
-          userId: currentUser.uid
+          createdAt: firebase.firestore.Timestamp.now(),
+          updatedAt: firebase.firestore.Timestamp.now(),
+          userId: user.uid,
+          username: userData.username,
+          userPhotoURL: userData.photoURL,
+          listenCount: 0,
+          totalRating: 0,
+          ratingCount: 0,
+          averageRating: 0
         });
 
         statusDiv.textContent = 'Upload successful!';
-        statusDiv.className = '';
+        statusDiv.className = 'success';
         
         // Redirect to dashboard after short delay
         setTimeout(() => {
@@ -295,13 +325,6 @@
         console.error('Upload error:', error);
         statusDiv.textContent = error.message;
         statusDiv.className = 'error';
-        
-        // If it's an authentication error, redirect to login
-        if (error.message.toLowerCase().includes('authentication') || error.message.toLowerCase().includes('log in')) {
-          setTimeout(() => {
-            window.location.href = 'login.php';
-          }, 2000);
-        }
       }
     });
   </script>
