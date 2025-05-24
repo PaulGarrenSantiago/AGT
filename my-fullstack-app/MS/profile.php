@@ -1,236 +1,356 @@
+<?php
+  include 'header.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Profile</title>
+  <title>Profile - Anything Goes Tambayan</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
-      background: #000;
       margin: 0;
-      font-family: 'Montserrat', Arial, sans-serif;
-      color: #fff;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
     }
-    .profile-header {
-      background: linear-gradient(90deg, rgba(230, 203, 28, 0.76) 0%, rgba(45, 50, 194, 0.72) 47%, rgba(204, 35, 35, 0.79) 100%);
-      padding: 2.5rem 2rem 2rem 4rem;
+
+    /* Profile Section Styles */
+    .profile-section {
+      margin-top: 70px;
+      padding: 3rem 2rem;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      position: relative;
+    }
+
+    .profile-container {
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
-      position: relative;
-      min-height: 220px;
+      gap: 2.5rem;
     }
+
     .profile-avatar {
-      width: 140px;
-      height: 140px;
+      width: 180px;
+      height: 180px;
       border-radius: 50%;
-      background: #fff;
-      margin-right: 2.5rem;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border: 4px solid white;
       overflow: hidden;
-      border: 6px solid #fff;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
       position: relative;
     }
+
     .profile-avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .profile-info {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
     }
+
     .profile-name {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 800;
-      letter-spacing: 1px;
-      color: #fff;
-      margin: 0 0 0.5rem 0;
-      text-shadow: 1px 1px 8px #222;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
+
     .profile-bio {
       font-size: 1.2rem;
-      font-style: italic;
-      color: #e0e0e0;
-      margin-bottom: 0.5rem;
+      opacity: 0.9;
+      margin-bottom: 1.5rem;
     }
+
     .profile-stats {
-      position: absolute;
-      top: 1.5rem;
-      right: 2.5rem;
       display: flex;
       gap: 2.5rem;
       font-size: 1.1rem;
-      font-weight: 600;
-      color: #fff;
     }
+
+    .profile-stats div {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
     .profile-stats span {
-      margin-left: 0.5rem;
-      color: #fff;
+      font-weight: 600;
+      font-size: 1.2rem;
     }
+
+    /* Content Section Styles */
+    .content-section {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
     .topic-filters {
       display: flex;
       gap: 1rem;
-      margin: 2.5rem 0 2rem 3.5rem;
+      margin-bottom: 2rem;
     }
+
     .topic-filters button {
-      padding: 0.7rem 2rem;
-      border-radius: 7px;
+      padding: 0.8rem 2rem;
       border: none;
-      font-size: 1.1rem;
+      border-radius: 8px;
+      font-size: 1rem;
       font-weight: 600;
-      background: #111;
-      color: #fff;
+      background: #f0f0f0;
+      color: #444;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      outline: none;
-      border: 2px solid #444;
+      transition: all 0.2s;
     }
-    .topic-filters .active,
+
+    .topic-filters button.active,
     .topic-filters button:hover {
-      background: #ffe066;
-      color: #222;
-      border: 2px solid #ffe066;
+      background: #1e3a8a;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30,58,138,0.2);
     }
+
     .topics-grid {
-      display: flex;
-      gap: 2.5rem;
-      margin: 0 0 2.5rem 3.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
     }
+
     .topic-card {
-      background: #181818;
-      border-radius: 10px;
+      background: white;
+      border-radius: 12px;
       overflow: hidden;
-      width: 270px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.18);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0 0 1.2rem 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      cursor: pointer;
     }
+
+    .topic-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(30,58,138,0.15);
+    }
+
     .topic-card img {
       width: 100%;
-      height: 210px;
+      height: 200px;
       object-fit: cover;
-      border-bottom: 2px solid #ffe066;
     }
-    .back-btn {
-      position: fixed;
-      right: 3.5rem;
-      bottom: 2.5rem;
-      background: #ff3b3b;
-      color: #fff;
-      font-size: 1.3rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      padding: 0.7rem 2.2rem;
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.18);
-      transition: background 0.2s;
+
+    .topic-card-content {
+      padding: 1.2rem;
     }
-    .back-btn:hover {
-      background: #d32f2f;
+
+    .topic-card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 0.5rem;
     }
-    #edit-avatar-btn:hover {
-  background: #ffd700;
-}
+
+    .topic-card-stats {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .topic-card-stats i {
+      color: #1e3a8a;
+    }
+
     @media (max-width: 900px) {
-      .profile-header, .topic-filters, .topics-grid {
+      .profile-container {
         flex-direction: column;
-        align-items: flex-start;
-        margin-left: 1rem;
-        margin-right: 1rem;
+        text-align: center;
       }
-      .profile-header {
-        min-height: 320px;
-        padding: 2rem 1rem 1.5rem 1rem;
+
+      .profile-stats {
+        justify-content: center;
       }
+
+      .topics-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .profile-name {
+        font-size: 2rem;
+      }
+
       .profile-avatar {
-        margin-bottom: 1rem;
-        margin-right: 0;
+        width: 140px;
+        height: 140px;
       }
-      .topic-filters, .topics-grid {
-        margin-left: 0;
+
+      .topic-filters {
+        flex-wrap: wrap;
       }
-      .back-btn {
-        right: 1.5rem;
+
+      .topic-filters button {
+        flex: 1;
+        min-width: 140px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Add Firebase SDKs if not already present -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-<script src="../firebase-config.js"></script>
+  <section class="profile-section">
+    <div class="profile-container">
+      <div class="profile-avatar" id="profile-avatar">
+        <img src="img/default-avatar.jpg" alt="Profile" id="profile-image">
+      </div>
+      <div class="profile-info">
+        <h1 class="profile-name" id="profile-username">Loading...</h1>
+        <p class="profile-bio" id="profile-names">Loading...</p>
+        <div class="profile-stats">
+          <div>
+            <i class="fas fa-user-friends"></i>
+            Following <span id="following-count">0</span>
+          </div>
+          <div>
+            <i class="fas fa-users"></i>
+            Followers <span id="followers-count">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <div class="profile-header">
-    <div class="profile-avatar" id="profile-avatar" style="position:relative;">
-      <img src="img/avatar.jpg" alt="Profile" style="width:100%;height:100%;object-fit:cover;">
+  <section class="content-section">
+    <div class="topic-filters">
+      <button class="active" onclick="setActiveFilter(this)">All Topics</button>
+      <button onclick="window.location.href='populartopics.php'">Popular Topics</button>
+      <button onclick="window.location.href='oldesttopics.php'">Oldest Topics</button>
     </div>
-    <div class="profile-info">
-      <div class="profile-name" id="profile-username">USERNAME</div>
-      <div class="profile-bio" id="profile-names">First Last</div>
-    </div>
-    <div class="profile-stats">
-      <div>Following <span>7</span></div>
-      <div>Followers <span>10.2k</span></div>
-    </div>
-  </div>
 
-  <div class="topic-filters">
-    <button class="active" onclick="setActiveFilter(this)">All Topics</button>
-    <button onclick="window.location.href='populartopics.html'">Popular Topics</button>
-    <button onclick="setActiveFilter(this)">Oldest Topics</button>
-  </div>
-
-  <div class="topics-grid">
-    <div class="topic-card">
-      <img src="img/pod1.jpg" alt="Podcast Talk Show with Juan Luna" />
+    <div class="topics-grid" id="topics-container">
+      <!-- Topics will be dynamically loaded here -->
     </div>
-    <div class="topic-card">
-      <img src="img/pod2.jpg" alt="Morning Podcast" />
-    </div>
-    <div class="topic-card">
-      <img src="img/pod3.jpg" alt="Podcast" />
-    </div>
-  </div>
-
-  <button class="back-btn" onclick="window.history.back()">Back</button>
+  </section>
 
   <script>
     function setActiveFilter(btn) {
       document.querySelectorAll('.topic-filters button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      // Add logic here to filter topics if needed
     }
-  </script>
-  <script>
-document.addEventListener("DOMContentLoaded", function() {
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      firebase.firestore().collection("users").doc(user.uid).get().then(function(doc) {
-        if (doc.exists) {
-          const data = doc.data();
-          // Set avatar
-          const avatarImg = document.querySelector("#profile-avatar img");
-          avatarImg.src = data.photoURL || "img/default-image.jpg";
-          // Set username
-          document.getElementById("profile-username").textContent = data.username || "Username";
-          // Set first and last name
-          document.getElementById("profile-names").textContent = (data.firstName || "") + " " + (data.lastName || "");
+
+    // Load user data and topics
+    document.addEventListener("DOMContentLoaded", function() {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // Get user data from Firestore
+          firebase.firestore().collection("users").doc(user.uid).get().then(function(doc) {
+            if (doc.exists) {
+              const data = doc.data();
+              // Update profile image
+              const profileImage = document.getElementById("profile-image");
+              profileImage.src = data.photoURL || user.photoURL || "img/default-avatar.jpg";
+              
+              // Update username and full name
+              document.getElementById("profile-username").textContent = data.username || user.displayName || "Username";
+              
+              // Set bio/names
+              const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim();
+              document.getElementById("profile-names").textContent = fullName || "Update your profile";
+              
+              // Update stats
+              document.getElementById("following-count").textContent = data.following?.length || 0;
+              document.getElementById("followers-count").textContent = data.followers?.length || 0;
+
+              // Load user's podcasts
+              loadUserPodcasts(user.uid);
+            } else {
+              // Create user document if it doesn't exist
+              firebase.firestore().collection("users").doc(user.uid).set({
+                email: user.email,
+                username: user.displayName || "Username",
+                photoURL: user.photoURL || "img/default-avatar.jpg",
+                following: [],
+                followers: [],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              }).then(() => {
+                loadUserPodcasts(user.uid);
+              });
+            }
+          }).catch(function(error) {
+            console.error("Error getting user data:", error);
+            document.getElementById("profile-username").textContent = "Error loading profile";
+            document.getElementById("profile-names").textContent = "Please try again later";
+          });
+        } else {
+          window.location.href = 'login.php';
         }
       });
+    });
+
+    function loadUserPodcasts(userId) {
+      const topicsContainer = document.getElementById('topics-container');
+      
+      firebase.firestore().collection("podcasts")
+        .where("userId", "==", userId)
+        .orderBy("createdAt", "desc")
+        .get()
+        .then((querySnapshot) => {
+          topicsContainer.innerHTML = ''; // Clear existing content
+          
+          if (querySnapshot.empty) {
+            topicsContainer.innerHTML = `
+              <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                <h3>No podcasts yet</h3>
+                <p>Start creating your first podcast!</p>
+                <a href="upload.php" class="btn-publish" style="display: inline-block; margin-top: 1rem; padding: 0.8rem 2rem; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; text-decoration: none; border-radius: 8px;">
+                  <i class="fas fa-upload"></i> Upload Your First Podcast
+                </a>
+              </div>
+            `;
+            return;
+          }
+
+          querySnapshot.forEach((doc) => {
+            const podcast = doc.data();
+            const date = podcast.createdAt.toDate().toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            });
+
+            const podcastCard = `
+              <div class="topic-card" onclick="window.location.href='view.php?id=${doc.id}'">
+                <img src="${podcast.imageURL || 'img/default-podcast.jpg'}" alt="${podcast.title}">
+                <div class="topic-card-content">
+                  <h3 class="topic-card-title">${podcast.title}</h3>
+                  <div class="topic-card-stats">
+                    <span><i class="far fa-calendar"></i> ${date}</span>
+                    <span><i class="fas fa-headphones"></i> ${podcast.listenCount || 0} listens</span>
+                  </div>
+                </div>
+              </div>
+            `;
+            
+            topicsContainer.innerHTML += podcastCard;
+          });
+        })
+        .catch((error) => {
+          console.error("Error loading podcasts:", error);
+          topicsContainer.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+              <h3>Error loading podcasts</h3>
+              <p>Please try again later</p>
+            </div>
+          `;
+        });
     }
-  });
-});
-</script>
+  </script>
 </body>
 </html>

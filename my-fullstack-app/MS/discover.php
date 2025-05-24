@@ -6,56 +6,112 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard</title>
+  <title>Discover - Anything Goes Tambayan</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       margin: 0;
+      padding: 0;
       font-family: Arial, sans-serif;
-      background-color: black;
+      background-color: #f9f9f9;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
     }
+
     .container {
       padding: 2rem;
+      margin-top: 20px;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
     }
+
     h2 {
-      margin-bottom: 1rem;
-      color: white;
+      margin-bottom: 1.5rem;
+      color: #222;
+      font-size: 1.8rem;
+      font-weight: 600;
     }
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr); /* 4 cards in one line */
+      grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
     }
+
     .card {
       background: white;
-      padding: 1rem;
-      border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center;
-        height: 270px;
-    }
-    .card h3 {
-      margin: 0.5rem 0 0.2rem 0;
-    }
-    .card p {
-      margin: 0 0 0.5rem 0;
-      color: #444;
-      font-size: 0.95rem;
-    }
-    .card a {
-      display: inline-block;
-      margin-top: 0.1rem;
-      background-color: #1e3a8a;
-      color: white;
-      padding: 0.3rem 9rem;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.15s, box-shadow 0.15s;
+      padding: 0;
+      height: 270px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       text-decoration: none;
-      border-radius: 4px;
+      color: inherit;
     }
+
+    .card:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 8px 24px rgba(30,58,138,0.18);
+    }
+
     .podcast-cover {
-      width: 70%;
-      height: 60%;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      border-radius: 0;
+      margin-bottom: 0;
+      display: block;
+    }
+
+    .card hr {
+      display: none;
+    }
+
+    .card h3, .card p {
+      margin: 0.7rem 1rem 0 1rem;
+      text-align: left;
+    }
+
+    .card h3 {
+      font-size: 1.08rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .card p {
+      font-size: 0.97rem;
+      color: #444;
+      margin-bottom: 0.7rem;
+    }
+
+    .card a {
+      display: none;
+    }
+
+    @media (max-width: 1200px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .container {
+        padding: 1rem;
+      }
     }
   </style>
 </head>
@@ -63,54 +119,70 @@
   <div class="container">
     <h2>Discover More Topics</h2>
     <div class="grid">
-      <div class="card">
-        <img src="pod1.jpg" alt="Podcast Talk Show with Juan Luna" class="podcast-cover" />
-        <hr>
-        <h3>Podcast Talk Show with Juan Luna</h3>
-        <p>April 5, 2023 • 21.9k listens</p>
-        <a href="episode.html">View</a>
-      </div>
-      <div class="card">
-        <img src="pod2.jpg" alt="Positive Lifestyle" class="podcast-cover" />
-        <hr>
-        <h3>Positive Lifestyle</h3>
-        <p>April 5, 2023 • 10k listens</p>
-        <a href="episode.html">View</a>
-      </div>
-      <div class="card">
-        <img src="pod3.jpg" alt="Live Podcast" class="podcast-cover" />
-        <hr>
-        <h3>Live Podcast</h3>
-        <p>April 5, 2023 • 55k listens</p>
-        <a href="episode.html">View</a>
-      </div>
-      <div class="card">
-        <img src="pod4.png" alt="Morning Motivation" class="podcast-cover" />
-        <hr>
+      <a href="episode.php" class="card">
+        <img src="img/kk.jpg" alt="Kwento at Kape" class="podcast-cover" />
+        <h3>Kwento at Kape</h3>
+        <p>June 16, 2024 • 789.9k listens</p>
+      </a>
+      <a href="episode.php" class="card">
+        <img src="img/mic.jpg" alt="Mic sa Kanto" class="podcast-cover" />
+        <h3>Mic sa Kanto</h3>
+        <p>October 15, 2023 • 100k listens</p>
+      </a>
+      <a href="episode.php" class="card">
+        <img src="img/kubo.jpg" alt="Sa may Kubo" class="podcast-cover" />
+        <h3>Sa may Kubo</h3>
+        <p>July 26, 2023 • 55.9k listens</p>
+      </a>
+      <a href="episode.php" class="card">
+        <img src="img/morning.jpg" alt="Morning Motivation" class="podcast-cover" />
         <h3>Morning Motivation</h3>
-        <p>April 5, 2023 • 8k listens</p>
-        <a href="episode.html">View</a>
-      </div>
+        <p>December 15, 2023 • 8k listens</p>
+      </a>
     </div>
   </div>
 
   <script>
-    // JavaScript to toggle the dropdown menu
-    document.getElementById('menuBtn').addEventListener('click', function() {
+    // JavaScript to toggle the main menu dropdown
+    document.getElementById('menuBtn').addEventListener('click', function(event) {
+      event.stopPropagation();
       var dropdown = document.getElementById('dropdownMenu');
-      if (dropdown.style.display === 'block') {
-        dropdown.style.display = 'none';
+      if (dropdown.style.display === 'none' || !dropdown.style.display) {
+        dropdown.style.display = 'flex';
+        setTimeout(() => dropdown.classList.add('visible'), 10);
+        document.getElementById('profileDropdown').style.display = 'none';
+        document.getElementById('profileDropdown').classList.remove('visible');
       } else {
-        dropdown.style.display = 'block';
+        dropdown.classList.remove('visible');
+        setTimeout(() => dropdown.style.display = 'none', 200);
       }
     });
 
-    // Close the dropdown menu if the user clicks outside of it
-    window.addEventListener('click', function(event) {
-      var dropdown = document.getElementById('dropdownMenu');
-      if (!event.target.matches('.menu-icon') && !event.target.matches('.menu-icon *')) {
-        dropdown.style.display = 'none';
+    // JavaScript to toggle the profile dropdown
+    document.getElementById('profileBtn').addEventListener('click', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var profileDropdown = document.getElementById('profileDropdown');
+      if (profileDropdown.style.display === 'none' || !profileDropdown.style.display) {
+        profileDropdown.style.display = 'flex';
+        setTimeout(() => profileDropdown.classList.add('visible'), 10);
+        document.getElementById('dropdownMenu').style.display = 'none';
+        document.getElementById('dropdownMenu').classList.remove('visible');
+      } else {
+        profileDropdown.classList.remove('visible');
+        setTimeout(() => profileDropdown.style.display = 'none', 200);
       }
+    });
+
+    // Close dropdowns if the user clicks outside
+    window.addEventListener('click', function(event) {
+      const dropdowns = [document.getElementById('dropdownMenu'), document.getElementById('profileDropdown')];
+      dropdowns.forEach(dropdown => {
+        if (!event.target.closest('.header-icon-btn')) {
+          dropdown.classList.remove('visible');
+          setTimeout(() => dropdown.style.display = 'none', 200);
+        }
+      });
     });
   </script>
 </body>
