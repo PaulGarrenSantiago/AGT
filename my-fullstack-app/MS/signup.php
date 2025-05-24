@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login</title>
+  <title>Sign Up</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: black;
+      background: white;
       min-height: 100vh;
       margin: 0;
       padding: 0;
@@ -25,8 +25,8 @@
       border: 1px solid #d3d7da;
     }
     .left {
-      background: black;
-      width: 110%; /* Match login.html */
+      background: white;
+      width: 110%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -34,22 +34,21 @@
     }
     .image-container {
       width: 100%;
-      height: 600px; /* Match login.html */
-      background: black;
+      height: 600px;
+      background: white;
       border-radius: 8px;
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
     }
-    /* Example image styling, replace src as needed */
     .image-container img {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
     }
     .right {
-      width: 130%; /* Match login.html */
+      width: 110%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -63,33 +62,39 @@
       width: 100%;
       box-shadow: none;
     }
- input[type="email"] {
-  width: 94%;
-  padding: 0.7rem;
-  margin: 0.5rem 0 0.6rem; /* Less bottom margin */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-input[type="password"] {
-  width: 92%;
-  padding: 0.9rem;
-  margin: 0 0 1rem; /* No top margin */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+    input[type="email"] {
+      width: 94%;
+      padding: 0.7rem;
+      margin: 0.5rem 0 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    input[type="password"] {
+      width: 92%;
+      padding: 0.9rem;
+      margin: 0 0 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
     label {
       display: block;
       margin-bottom: 1rem;
     }
     .button {
       display: block;
-background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0.72) 100%, rgba(204, 35, 35, 0.79) 0%);
+      background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0.72) 100%, rgba(204, 35, 35, 0.79) 0%);
       color: white;
       padding: 0.6rem 1.2rem;
       text-align: center;
       border-radius: 4px;
       text-decoration: none;
       margin-top: 1rem;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+    .button:hover {
+      opacity: 0.9;
     }
     p {
       text-align: center;
@@ -97,7 +102,6 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
     }
     .name-fields {
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 0.7rem;
     }
@@ -107,17 +111,10 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
       border-radius: 4px;
     }
     .first-name {
-      flex: 1 1 0;
-      min-width: 0;
+      flex: 1;
     }
     .last-name {
-      flex: 1 1 0;
-      min-width: 0;
-    }
-    .username {
-      flex: 1 1 100%;
-      min-width: 0;
-      margin-top: 10px;
+      flex: 3;
     }
     .social-login {
       display: flex;
@@ -165,17 +162,16 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
     }
   </style>
   <!-- Add Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="../firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="../firebase-config.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="left">
       <div class="image-container">
-        <!-- Replace the src below with your image -->
-        <img src="img/dash.png" alt="Image" />
+        <img src="img/dashh.png" alt="Image" />
       </div>
     </div>
     <div class="right">
@@ -185,8 +181,8 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
         <div class="name-fields">
           <input type="text" class="first-name" id="first-name" placeholder="First Name" required>
           <input type="text" class="last-name" id="last-name" placeholder="Last Name" required>
-          <input type="text" class="username" id="username" placeholder="Username" required>
         </div>
+        <input type="text" id="username" placeholder="Username" required style="width: 94%; padding: 0.7rem; margin: 0.5rem 0 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
         <input type="email" id="signup-email" placeholder="Email Address" required />
         <input type="password" id="signup-password" placeholder="Password" required />
         <label><input type="checkbox" /> Remember Me</label>
@@ -202,14 +198,12 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
         </div>
 
         <button type="submit" class="button">Sign Up</button>
-        <div id="signup-error" style="color:red;"></div>
+        <div id="signup-error" style="color:red; margin-top:1rem; text-align:center;"></div>
         <hr>
         <p>Already have an account? <a href="login.php">Login</a></p>
       </form>
     </div>
   </div>
-</body>
-</html>
 
 <script>
   // Function to generate a unique userId
@@ -303,3 +297,6 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
       });
   });
 </script>
+
+</body>
+</html>

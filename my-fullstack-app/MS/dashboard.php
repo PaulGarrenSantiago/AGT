@@ -7,76 +7,62 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard - Anything Goes Tambayan</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: black;
-    }
     .container {
       padding: 2rem;
     }
     h2 {
       margin-bottom: 1rem;
-      color: white;
+      color: #222;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
+      gap: 1rem;
     }
     .card {
       background: white;
-      border-radius: 8px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.15s, box-shadow 0.15s;
+      padding: 0;
+      height: 270px;
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
-      transition: transform 0.2s;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-decoration: none;
+      color: inherit;
     }
     .card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 8px 24px rgba(30,58,138,0.18);
     }
-    .card-image {
+    .podcast-cover {
       width: 100%;
-      height: 200px;
+      height: 170px;
       object-fit: cover;
+      border-radius: 0;
+      margin-bottom: 0;
+      display: block;
     }
-    .card-content {
-      padding: 1rem;
+    .card hr {
+      display: none;
     }
-    .card-title {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.1rem;
-      color: #333;
+    .card h3, .card p {
+      margin: 0.7rem 1rem 0 1rem;
+      text-align: left;
     }
-    .card-meta {
-      color: #666;
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
+    .card h3 {
+      font-size: 1.08rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
     }
-    .card-stats {
-      display: flex;
-      justify-content: space-between;
-      color: #888;
-      font-size: 0.9rem;
+    .card p {
+      font-size: 0.97rem;
+      color: #444;
+      margin-bottom: 0.7rem;
     }
-    .uploader-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .uploader-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .uploader-name {
-      color: #0a2c5e;
-      font-weight: 500;
-    }
+
     @media (max-width: 1200px) {
       .grid {
         grid-template-columns: repeat(3, 1fr);
@@ -90,6 +76,9 @@
     @media (max-width: 600px) {
       .grid {
         grid-template-columns: 1fr;
+      }
+      .container {
+        padding: 1rem;
       }
     }
   </style>
@@ -120,17 +109,17 @@
           card.onclick = () => window.location.href = `listen.php?id=${doc.id}`;
           
           card.innerHTML = `
-            <img src="${data.imageURL}" alt="${data.title}" class="card-image">
+            <img src="${data.imageURL}" alt="${data.title}" class="podcast-cover">
             <div class="card-content">
               <div class="uploader-info">
-                <img src="${data.userPhotoURL}" alt="${data.username}" class="uploader-avatar">
-                <span class="uploader-name">${data.username}</span>
+                <img src="${data.userPhotoURL}" alt="${data.username}" class="uploader-avatar" style="width:24px;height:24px;border-radius:50%;margin-right:8px;">
+                <span class="uploader-name" style="color:#1e3a8a;font-weight:500;">${data.username}</span>
               </div>
               <h3 class="card-title">${data.title}</h3>
               <div class="card-meta">
                 ${new Date(data.createdAt.toDate()).toLocaleDateString()}
               </div>
-              <div class="card-stats">
+              <div class="card-stats" style="display:flex;justify-content:space-between;color:#666;font-size:0.9rem;margin-top:8px;">
                 <span><i class="fas fa-play"></i> ${data.listenCount || 0}</span>
                 <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0.0'}</span>
               </div>
@@ -141,31 +130,77 @@
         }
       } catch (error) {
         console.error('Error loading podcasts:', error);
+        // Show error message to user
+        const grid = document.getElementById('podcastGrid');
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+            <p style="color: #666;">Unable to load podcasts. Please try again later.</p>
+          </div>
+        `;
       }
     });
 
-    // Menu toggle handlers
-    document.getElementById('menuBtn').addEventListener('click', function(event) {
-      event.stopPropagation();
-      var dropdown = document.getElementById('dropdownMenu');
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-      document.getElementById('profileDropdown').style.display = 'none';
-    });
+    // Listen for search events from the header
+    document.addEventListener('headerSearch', async (e) => {
+      const searchQuery = e.detail.toLowerCase();
+      const grid = document.getElementById('podcastGrid');
+      grid.innerHTML = ''; // Clear current podcasts
 
-    document.getElementById('profileBtn').addEventListener('click', function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      var profileDropdown = document.getElementById('profileDropdown');
-      profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
-      document.getElementById('dropdownMenu').style.display = 'none';
-    });
+      try {
+        const db = firebase.firestore();
+        const podcastsRef = db.collection('podcasts');
+        
+        // Get all podcasts and filter client-side (for demo purposes)
+        // In production, you'd want to implement server-side search
+        const snapshot = await podcastsRef.get();
+        const matchingPodcasts = snapshot.docs.filter(doc => {
+          const data = doc.data();
+          return data.title.toLowerCase().includes(searchQuery) ||
+                 data.username.toLowerCase().includes(searchQuery);
+        });
 
-    window.addEventListener('click', function(event) {
-      if (!event.target.matches('#menuBtn') && !event.target.closest('#dropdownMenu')) {
-        document.getElementById('dropdownMenu').style.display = 'none';
-      }
-      if (!event.target.matches('#profileBtn') && !event.target.closest('#profileDropdown')) {
-        document.getElementById('profileDropdown').style.display = 'none';
+        if (matchingPodcasts.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+              <p style="color: #666;">No podcasts found matching "${searchQuery}"</p>
+            </div>
+          `;
+          return;
+        }
+
+        matchingPodcasts.forEach(doc => {
+          const data = doc.data();
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.onclick = () => window.location.href = `listen.php?id=${doc.id}`;
+          
+          card.innerHTML = `
+            <img src="${data.imageURL}" alt="${data.title}" class="podcast-cover">
+            <div class="card-content">
+              <div class="uploader-info">
+                <img src="${data.userPhotoURL}" alt="${data.username}" class="uploader-avatar" style="width:24px;height:24px;border-radius:50%;margin-right:8px;">
+                <span class="uploader-name" style="color:#1e3a8a;font-weight:500;">${data.username}</span>
+              </div>
+              <h3 class="card-title">${data.title}</h3>
+              <div class="card-meta">
+                ${new Date(data.createdAt.toDate()).toLocaleDateString()}
+              </div>
+              <div class="card-stats" style="display:flex;justify-content:space-between;color:#666;font-size:0.9rem;margin-top:8px;">
+                <span><i class="fas fa-play"></i> ${data.listenCount || 0}</span>
+                <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0.0'}</span>
+              </div>
+            </div>
+          `;
+          
+          grid.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Error searching podcasts:', error);
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+            <p style="color: #666;">Error searching podcasts. Please try again later.</p>
+          </div>
+        `;
       }
     });
   </script>

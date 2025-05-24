@@ -1,251 +1,399 @@
+<?php
+  include 'header.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Upload Podcast - Anything Goes Tambayan</title>
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Add Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="../firebase-config.js"></script>
-  
-  <!-- Add authentication check -->
-  <script>
-    // Check authentication state before page loads
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (!user) {
-        // User is not logged in, redirect to login page
-        window.location.href = 'login.php';
-      }
-    });
-  </script>
-
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #4be1ec 0%, #1a6dff 100%);
+      --secondary-gradient: linear-gradient(135deg, #ff5858 0%, #ff2d2d 100%);
+      --text-primary: #222;
+      --text-secondary: #555;
+    }
+
     body {
       margin: 0;
       font-family: 'Montserrat', Arial, sans-serif;
-      background: #000;
-      color: #fff;
+      background-color: #f9f9f9;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     .container {
-      width: 100%;
-      max-width: 600px;
-      margin: 20px;
-      position: relative;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
     }
 
-    .upload-card {
+    .upload-section {
       background: white;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      position: relative;
+      width: 100%;
+      box-sizing: border-box;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: #666;
-      padding: 5px;
-      z-index: 10;
+    .upload-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(30,58,138,0.18);
     }
 
-    .close-btn:hover {
-      color: #333;
-    }
-
-    .form-title {
-      color: #0a2c5e;
+    .section-title {
+      color: var(--text-primary);
       font-size: 1.5rem;
+      font-weight: 700;
       text-align: center;
       margin-bottom: 2rem;
-      font-weight: bold;
+      position: relative;
     }
 
-    .upload-boxes {
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+    }
+
+    .upload-boxes-container {
       display: flex;
-      gap: 20px;
+      gap: 1.5rem;
       margin-bottom: 2rem;
     }
 
     .upload-box {
-      flex: 1;
-      border: 2px dashed #ccc;
-      border-radius: 8px;
-      padding: 2rem;
-      text-align: center;
+      border: 2.5px dashed #1a6dff;
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       cursor: pointer;
-      transition: border-color 0.3s;
+      transition: all 0.3s ease;
+      background: rgba(26, 109, 255, 0.05);
+      min-height: 180px;
+      justify-content: center;
+      flex: 1;
     }
 
-    .upload-box:hover {
-      border-color: #0a2c5e;
+    #thumbnailZone {
+      border-color: #4be1ec;
+      background: rgba(75, 225, 236, 0.05);
+    }
+
+    #thumbnailZone .upload-icon {
+      color: #4be1ec;
+    }
+
+    #thumbnailZone:hover {
+      border-color: #1a6dff;
+      background: rgba(26, 109, 255, 0.08);
+    }
+
+    #thumbnailZone:hover .upload-icon {
+      color: #1a6dff;
     }
 
     .upload-icon {
-      font-size: 2rem;
-      color: #666;
-      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
     }
 
     .upload-text {
-      color: #666;
-      font-size: 1rem;
-    }
-
-    .file-name {
-      margin-top: 0.5rem;
-      font-size: 0.8rem;
-      color: #666;
-      word-break: break-all;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      transition: color 0.3s ease;
     }
 
     .form-input {
       width: 100%;
-      padding: 0.8rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.2rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.3s ease;
+      background: #fff;
+      color: var(--text-primary);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       box-sizing: border-box;
     }
 
-    textarea.form-input {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .category-select {
-      width: 100%;
-      padding: 0.8rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background: white;
-      color: #333;
+    .form-input:focus {
+      border-color: #1a6dff;
+      box-shadow: 0 4px 15px rgba(26, 109, 255, 0.15);
     }
 
     .btn-publish {
       width: 100%;
-      padding: 0.8rem;
-      background: #0a2c5e;
-      color: white;
+      padding: 1rem;
       border: none;
-      border-radius: 4px;
+      border-radius: 10px;
+      background: var(--primary-gradient);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
       cursor: pointer;
-      font-size: 1rem;
-      font-weight: bold;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-publish::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
     }
 
     .btn-publish:hover {
-      background: #0d3d7a;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(26, 109, 255, 0.4);
+    }
+
+    .btn-publish:hover::before {
+      left: 100%;
+    }
+
+    .loading {
+      position: relative;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: loading 0.8s linear infinite;
+    }
+
+    @keyframes loading {
+      to { transform: rotate(360deg); }
+    }
+
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      padding-right: 2.5rem;
+    }
+
+    select.form-input:invalid {
+      color: #666;
     }
 
     #uploadStatus {
       text-align: center;
       margin: 1rem 0;
       padding: 0.8rem;
-      border-radius: 4px;
+      border-radius: 10px;
       font-weight: 500;
+      display: none;
     }
 
     #uploadStatus.error {
+      display: block;
       background-color: #fee2e2;
       color: #dc2626;
       border: 1px solid #fecaca;
     }
 
     #uploadStatus.success {
+      display: block;
       background-color: #dcfce7;
       color: #16a34a;
       border: 1px solid #bbf7d0;
     }
 
-    .error {
-      color: #dc3545;
-    }
-
-    @media (max-width: 480px) {
-      .upload-boxes {
-        flex-direction: column;
-      }
-      
+    @media (max-width: 768px) {
       .container {
-        margin: 10px;
+        margin: 1rem auto;
+        padding: 0 1rem;
       }
-      
-      .upload-card {
+
+      .upload-section {
         padding: 1.5rem;
+      }
+
+      .upload-boxes-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .upload-box {
+        width: 100%;
+        min-height: 150px;
+        padding: 1.5rem;
+      }
+
+      .form-input {
+        padding: 0.8rem 1rem;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="upload-card">
-      <button class="close-btn" type="button" onclick="window.location.href='dashboard.php'" aria-label="Close">
-        ×
-      </button>
-      <h3 class="form-title">Upload your podcast here.</h3>
+    <div class="upload-section">
+      <h3 class="section-title">Upload Your Podcast</h3>
       <form id="uploadForm" enctype="multipart/form-data">
-        <div class="upload-boxes">
-          <label class="upload-box">
-            <i class="fa fa-music upload-icon"></i>
-            <div class="upload-text">Upload Audio</div>
-            <div id="audioFileName" class="file-name"></div>
-            <input type="file" id="audioFile" name="audioFile" accept="audio/*" required style="display:none;">
-          </label>
-          <label class="upload-box">
+        <div class="upload-boxes-container">
+          <label for="thumbnailInput" class="upload-box" id="thumbnailZone">
             <i class="fa fa-image upload-icon"></i>
-            <div class="upload-text">Upload Thumbnail</div>
-            <div id="imageFileName" class="file-name"></div>
-            <input type="file" id="imageFile" name="imageFile" accept="image/*" required style="display:none;">
+            <div class="upload-text">Upload Thumbnail Image</div>
+            <input type="file" id="thumbnailInput" name="imageFile" required style="display:none;" accept="image/*">
+          </label>
+          <label for="audioInput" class="upload-box" id="audioZone">
+            <i class="fa fa-music upload-icon"></i>
+            <div class="upload-text">Upload Audio File</div>
+            <input type="file" id="audioInput" name="audioFile" required style="display:none;" accept="audio/*">
           </label>
         </div>
-        <input type="text" class="form-input" name="title" id="title" placeholder="Title..." required>
-        <textarea class="form-input" name="description" id="description" placeholder="Description..." required></textarea>
-        <select class="category-select" name="category" id="category" required>
-          <option value="">Select Category...</option>
-          <option value="comedy">Comedy</option>
-          <option value="education">Education</option>
-          <option value="lifestyle">Lifestyle</option>
-          <option value="music">Music</option>
-          <option value="news">News</option>
-          <option value="sports">Sports</option>
+        <input type="text" class="form-input" name="title" id="title" placeholder="Enter podcast title..." required>
+        <select class="form-input" name="category" id="category" required>
+          <option value="">Select Category</option>
+          <option value="business">Business</option>
+          <option value="health">Health & Wellness</option>
           <option value="technology">Technology</option>
+          <option value="lifestyle">Lifestyle</option>
+          <option value="education">Education</option>
+          <option value="sports">Sports</option>
+          <option value="comedy">Comedy</option>
+          <option value="music">Music</option>
         </select>
+        <textarea class="form-input" name="description" id="description" placeholder="Write a description for your podcast..." rows="3" required></textarea>
         <div id="uploadStatus"></div>
-        <button type="submit" class="btn-publish">Publish</button>
+        <button type="submit" class="btn-publish" id="publishBtn">
+          <i class="fas fa-podcast"></i> Publish Podcast
+        </button>
       </form>
     </div>
   </div>
 
   <script>
-    // Display file names when selected
-    document.getElementById('audioFile').addEventListener('change', function(e) {
-      document.getElementById('audioFileName').textContent = e.target.files[0]?.name || '';
+    // Enhance file upload interaction
+    const thumbnailZone = document.getElementById('thumbnailZone');
+    const audioZone = document.getElementById('audioZone');
+    const thumbnailInput = document.getElementById('thumbnailInput');
+    const audioInput = document.getElementById('audioInput');
+    const form = document.getElementById('uploadForm');
+    const publishBtn = document.getElementById('publishBtn');
+    const uploadStatus = document.getElementById('uploadStatus');
+
+    // Drag and drop functionality
+    [thumbnailZone, audioZone].forEach(zone => {
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        zone.addEventListener(eventName, preventDefaults, false);
+      });
     });
 
-    document.getElementById('imageFile').addEventListener('change', function(e) {
-      document.getElementById('imageFileName').textContent = e.target.files[0]?.name || '';
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // Highlight effects
+    ['dragenter', 'dragover'].forEach(eventName => {
+      thumbnailZone.addEventListener(eventName, () => highlight(thumbnailZone), false);
+      audioZone.addEventListener(eventName, () => highlight(audioZone), false);
     });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      thumbnailZone.addEventListener(eventName, () => unhighlight(thumbnailZone), false);
+      audioZone.addEventListener(eventName, () => unhighlight(audioZone), false);
+    });
+
+    function highlight(zone) {
+      zone.style.borderColor = '#4be1ec';
+      zone.style.transform = 'scale(1.02)';
+    }
+
+    function unhighlight(zone) {
+      zone.style.borderColor = zone === thumbnailZone ? '#4be1ec' : '#1a6dff';
+      zone.style.transform = 'scale(1)';
+    }
+
+    // Handle file drops
+    thumbnailZone.addEventListener('drop', (e) => handleDrop(e, thumbnailInput, 'image'), false);
+    audioZone.addEventListener('drop', (e) => handleDrop(e, audioInput, 'audio'), false);
+
+    function handleDrop(e, input, type) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith(type)) {
+          input.files = files;
+          updateFileName(input === thumbnailInput ? thumbnailZone : audioZone, file);
+        } else {
+          showError(`Please upload a valid ${type} file.`);
+        }
+      }
+    }
+
+    // Handle file input changes
+    thumbnailInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        updateFileName(thumbnailZone, e.target.files[0]);
+      }
+    });
+
+    audioInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        updateFileName(audioZone, e.target.files[0]);
+      }
+    });
+
+    function updateFileName(zone, file) {
+      const uploadText = zone.querySelector('.upload-text');
+      uploadText.textContent = `Selected: ${file.name}`;
+      zone.style.borderColor = '#4be1ec';
+    }
+
+    function showError(message) {
+      uploadStatus.textContent = message;
+      uploadStatus.className = 'error';
+      setTimeout(() => {
+        uploadStatus.className = '';
+        uploadStatus.textContent = '';
+      }, 3000);
+    }
+
+    function showSuccess(message) {
+      uploadStatus.textContent = message;
+      uploadStatus.className = 'success';
+    }
 
     // Handle form submission
-    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+    form.addEventListener('submit', async function(e) {
       e.preventDefault();
-      const statusDiv = document.getElementById('uploadStatus');
-      statusDiv.textContent = 'Uploading...';
+      publishBtn.classList.add('loading');
+      publishBtn.disabled = true;
 
       try {
         // Check authentication first
@@ -259,7 +407,6 @@
         const userDoc = await db.collection('users').doc(user.uid).get();
         
         if (!userDoc.exists) {
-          // Create a basic profile if it doesn't exist
           await db.collection('users').doc(user.uid).set({
             email: user.email,
             username: user.displayName || 'Anonymous User',
@@ -268,16 +415,7 @@
           });
         }
 
-        const formData = new FormData();
-        const audioFile = document.getElementById('audioFile').files[0];
-        const imageFile = document.getElementById('imageFile').files[0];
-
-        if (!audioFile || !imageFile) {
-          throw new Error('Please select both audio and image files');
-        }
-
-        formData.append('audioFile', audioFile);
-        formData.append('imageFile', imageFile);
+        const formData = new FormData(this);
 
         // Upload files to server
         const response = await fetch('upload_handler.php', {
@@ -296,10 +434,10 @@
         };
 
         // Save to Firestore
-        const podcastRef = await db.collection('podcasts').add({
-          title: document.getElementById('title').value,
-          description: document.getElementById('description').value,
-          category: document.getElementById('category').value,
+        await db.collection('podcasts').add({
+          title: this.title.value,
+          description: this.description.value,
+          category: this.category.value,
           audioURL: result.audioURL,
           imageURL: result.imageURL,
           createdAt: firebase.firestore.Timestamp.now(),
@@ -313,8 +451,7 @@
           averageRating: 0
         });
 
-        statusDiv.textContent = 'Upload successful!';
-        statusDiv.className = 'success';
+        showSuccess('Upload successful!');
         
         // Redirect to dashboard after short delay
         setTimeout(() => {
@@ -323,8 +460,9 @@
 
       } catch (error) {
         console.error('Upload error:', error);
-        statusDiv.textContent = error.message;
-        statusDiv.className = 'error';
+        showError(error.message);
+        publishBtn.classList.remove('loading');
+        publishBtn.disabled = false;
       }
     });
   </script>

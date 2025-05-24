@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: black;
+      background: white;
       min-height: 100vh;
       margin: 0;
       padding: 0;
@@ -22,10 +22,10 @@
       border-radius: 10px;
       overflow: hidden;
       background: #656363;
-      border: 1px solid #d3d7da; /* Add this line */
+      border: 1px solid #d3d7da;
     }
     .left {
-      background: black;
+      background: white;
       width: 110%;
       display: flex;
       justify-content: center;
@@ -35,14 +35,13 @@
     .image-container {
       width: 100%;
       height: 600px;
-      background: black;
+      background: white;
       border-radius: 8px;
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
     }
-    /* Example image styling, replace src as needed */
     .image-container img {
       max-width: 100%;
       max-height: 100%;
@@ -63,33 +62,39 @@
       width: 100%;
       box-shadow: none;
     }
- input[type="email"] {
-  width: 94%;
-  padding: 0.7rem;
-  margin: 0.5rem 0 0.6rem; /* Less bottom margin */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-input[type="password"] {
-  width: 92%;
-  padding: 0.9rem;
-  margin: 0 0 1rem; /* No top margin */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+    input[type="email"] {
+      width: 94%;
+      padding: 0.7rem;
+      margin: 0.5rem 0 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    input[type="password"] {
+      width: 92%;
+      padding: 0.9rem;
+      margin: 0 0 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
     label {
       display: block;
       margin-bottom: 1rem;
     }
     .button {
       display: block;
-background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0.72) 100%, rgba(204, 35, 35, 0.79) 0%);
+      background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0.72) 100%, rgba(204, 35, 35, 0.79) 0%);
       color: white;
       padding: 0.6rem 1.2rem;
       text-align: center;
       border-radius: 4px;
       text-decoration: none;
       margin-top: 1rem;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+    .button:hover {
+      opacity: 0.9;
     }
     p {
       text-align: center;
@@ -120,15 +125,13 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
   <div class="container">
     <div class="left">
       <div class="image-container">
-        <!-- Replace the src below with your image -->
-        <img src="img/dash.png" alt="Image" />
+        <img src="img/dashh.png" alt="Image" />
       </div>
     </div>
     <div class="right">
-
       <form id="login-form">
         <h2>Login</h2>
-         <input type="email" id="login-email" placeholder="Email Address" required />
+        <input type="email" id="login-email" placeholder="Email Address" required />
         <input type="password" id="login-password" placeholder="Password" required />
         <label><input type="checkbox" /> Remember Me</label>
         
@@ -142,9 +145,9 @@ background: linear-gradient(90deg,rgba(28, 190, 230, 0.76) 0%, rgba(0, 8, 255, 0
           </button>
         </div>
 
-        <button type="submit">Log In</button>
-        <div id="login-error" style="color:red;"></div>
-    <hr>
+        <button type="submit" class="button">Log In</button>
+        <div id="login-error" style="color:red; margin-top:1rem; text-align:center;"></div>
+        <hr>
         <p>No account yet? <a href="signup.php">Sign Up</a></p>
       </form>
     </div>
