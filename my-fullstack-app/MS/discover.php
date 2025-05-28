@@ -158,7 +158,9 @@
         // Collect all podcasts
         const podcasts = [];
         querySnapshot.forEach((doc) => {
-          podcasts.push(doc.data());
+          const data = doc.data();
+          data.id = doc.id;  // Save the document ID
+          podcasts.push(data);
         });
 
         // Shuffle array (Fisher-Yates)
@@ -173,7 +175,7 @@
         let html = '';
         discoverPodcasts.forEach((data, idx) => {
           html += `
-            <a class="card" href="${data.audioURL || '#'}" target="_blank" style="text-decoration: none; color: inherit;">
+            <a class="card" href="listen.php?id=${data.id}" style="text-decoration: none; color: inherit;">
               <img src="${data.imageURL}" alt="${data.title}" class="podcast-cover" />
               <div class="card-content">
                 <h3>${data.title}</h3>
