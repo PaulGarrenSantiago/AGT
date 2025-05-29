@@ -7,79 +7,111 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard - Anything Goes Tambayan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: #f6f8fa;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
     .container {
-      padding: 2rem;
+      padding: 2rem 0;
+      max-width: 1200px;
+      margin: 0 auto;
     }
+
     h2 {
-      margin-bottom: 1rem;
-      color: #222;
+      margin-bottom: 2rem;
+      color: #22223b;
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
     }
+
     .card {
-      background: white;
+      background: #fff;
       border-radius: 18px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 24px rgba(30,42,73,0.08);
       padding: 0;
-      height: 270px;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      transition: box-shadow 0.2s, transform 0.2s;
+      min-height: 380px;
       overflow: hidden;
-      text-decoration: none;
-      color: inherit;
+      position: relative;
     }
+
     .card:hover {
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 8px 24px rgba(30,58,138,0.18);
+      box-shadow: 0 8px 32px rgba(30,42,73,0.16);
+      transform: translateY(-6px) scale(1.02);
     }
+
     .podcast-cover {
       width: 100%;
       height: 170px;
       object-fit: cover;
-      border-radius: 0;
-      margin-bottom: 0;
-      display: block;
-    }
-    .card hr {
-      display: none;
-    }
-    .card h3, .card p {
-      margin: 0.7rem 1rem 0 1rem;
-      text-align: left;
-    }
-    .card h3 {
-      font-size: 1.08rem;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-    }
-    .card p {
-      font-size: 0.97rem;
-      color: #444;
-      margin-bottom: 0.7rem;
+      border-radius: 18px 18px 0 0;
+      background: #e9ecef;
+      margin-bottom: 1rem;
     }
 
-    @media (max-width: 1200px) {
-      .grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
+    .card-content {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0 1.5rem 1.2rem 1.5rem;
+      box-sizing: border-box;
     }
-    @media (max-width: 900px) {
-      .grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+
+    .card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
+      color: #22223b;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      word-break: break-word;
     }
-    @media (max-width: 600px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-      .container {
-        padding: 1rem;
-      }
+
+    .card p {
+      margin: 0 0 0.7rem 0;
+      color: #444;
+      font-size: 0.97rem;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 1.5em;
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: flex;
+      gap: 1.2rem;
+      color: #4f8cff;
+      font-size: 0.98rem;
+      align-items: center;
+      margin-top: auto;
+      margin-bottom: 0.2rem;
+    }
+
+    .stats i {
+      margin-right: 0.3rem;
     }
 
     .spinner {
@@ -95,6 +127,20 @@
       0% { transform: rotate(0deg);}
       100% { transform: rotate(360deg);}
     }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .container {
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -103,55 +149,64 @@
     <div id="loading-spinner" style="display: flex; justify-content: center; align-items: center; min-height: 200px;">
       <div class="spinner"></div>
     </div>
-    <div class="grid" id="podcastGrid">
+    <div id="podcastGrid" class="grid">
       <!-- Podcasts will be loaded dynamically -->
     </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
-  <script src="/path/to/firebase-config.js"></script>
+  <script src="../firebase-config.js"></script>
 
   <script>
-    // Load podcasts from Firestore
-    document.addEventListener('DOMContentLoaded', async () => {
-      document.getElementById('podcastGrid').style.display = 'none';
-      try {
-        const db = firebase.firestore();
-        const podcastsRef = db.collection('podcasts');
-        // Try both listenCount and viewCount if unsure
-        const snapshot = await podcastsRef.orderBy('viewCount', 'desc').limit(12).get();
-        const grid = document.getElementById('podcastGrid');
-        let html = '';
-        snapshot.forEach(doc => {
+    document.getElementById('podcastGrid').style.display = 'none';
+
+    const db = firebase.firestore();
+    db.collection("podcasts")
+      .get()
+      .then((querySnapshot) => {
+        // Collect all podcasts
+        const podcasts = [];
+        querySnapshot.forEach((doc) => {
           const data = doc.data();
+          data.id = doc.id;  // Save the document ID
+          podcasts.push(data);
+        });
+
+        // Sort by creation date (newest first)
+        podcasts.sort((a, b) => {
+          return b.createdAt.seconds - a.createdAt.seconds;
+        });
+
+        // Pick first 12 for dashboard
+        const dashboardPodcasts = podcasts.slice(0, 12);
+
+        let html = '';
+        dashboardPodcasts.forEach((data) => {
           html += `
-            <a class="card" href="${data.audioURL || '#'}" target="_blank" style="text-decoration: none; color: inherit;">
+            <a class="card" href="listen.php?id=${data.id}" style="text-decoration: none; color: inherit;">
               <img src="${data.imageURL}" alt="${data.title}" class="podcast-cover" />
               <div class="card-content">
+                <div class="uploader-info" style="display: flex; align-items: center; margin-bottom: 0.8rem;">
+                  <img src="${data.userPhotoURL || 'img/default-avatar.png'}" alt="${data.username}" 
+                    style="width: 24px; height: 24px; border-radius: 50%; margin-right: 8px;">
+                  <span style="color: #1e3a8a; font-weight: 500;">${data.username}</span>
+                </div>
                 <h3>${data.title}</h3>
                 <p>${data.description || ''}</p>
-                <div class="stats" style="display:flex;gap:1.2rem;color:#4f8cff;font-size:0.98rem;align-items:center;margin-top:1rem;">
+                <div class="stats">
                   <span><i class="fas fa-calendar"></i> ${formatDate(data.createdAt)}</span>
-                  <span><i class="fas fa-headphones"></i> ${data.viewCount || 0}</span>
+                  <span><i class="fas fa-headphones"></i> ${formatListeners(data.listenCount || 0)}</span>
+                  <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0.0'}</span>
                 </div>
               </div>
             </a>
           `;
         });
-        grid.innerHTML = html || '<p style="color:#666;">No data found.</p>';
+        document.getElementById('podcastGrid').innerHTML = html;
         document.getElementById('loading-spinner').style.display = 'none';
-        grid.style.display = 'grid';
-      } catch (error) {
-        console.error('Error loading podcasts:', error);
-        const grid = document.getElementById('podcastGrid');
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
-          <p style="color: #666;">Unable to load podcasts. Please try again later.</p>
-        </div>`;
-        document.getElementById('loading-spinner').style.display = 'none';
-        grid.style.display = 'grid';
-      }
-    });
+        document.getElementById('podcastGrid').style.display = 'grid';
+      });
 
     // Listen for search events from the header
     document.addEventListener('headerSearch', async (e) => {
@@ -190,16 +245,16 @@
           card.innerHTML = `
             <img src="${data.imageURL}" alt="${data.title}" class="podcast-cover">
             <div class="card-content">
-              <div class="uploader-info">
-                <img src="${data.userPhotoURL}" alt="${data.username}" class="uploader-avatar" style="width:24px;height:24px;border-radius:50%;margin-right:8px;">
-                <span class="uploader-name" style="color:#1e3a8a;font-weight:500;">${data.username}</span>
+              <div class="uploader-info" style="display: flex; align-items: center; margin-bottom: 0.8rem;">
+                <img src="${data.userPhotoURL || 'img/default-avatar.png'}" alt="${data.username}" 
+                  style="width: 24px; height: 24px; border-radius: 50%; margin-right: 8px;">
+                <span style="color: #1e3a8a; font-weight: 500;">${data.username}</span>
               </div>
-              <h3 class="card-title">${data.title}</h3>
-              <div class="card-meta">
-                ${new Date(data.createdAt.toDate()).toLocaleDateString()}
-              </div>
-              <div class="card-stats" style="display:flex;justify-content:space-between;color:#666;font-size:0.9rem;margin-top:8px;">
-                <span><i class="fas fa-play"></i> ${data.viewCount || 0}</span>
+              <h3>${data.title}</h3>
+              <p>${data.description || ''}</p>
+              <div class="stats">
+                <span><i class="fas fa-calendar"></i> ${formatDate(data.createdAt)}</span>
+                <span><i class="fas fa-headphones"></i> ${formatListeners(data.listenCount || 0)}</span>
                 <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0.0'}</span>
               </div>
             </div>
@@ -223,6 +278,13 @@
         return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
       }
       return date ? new Date(date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+    }
+
+    function formatListeners(listeners) {
+      if (!listeners) return '0 listens';
+      if (listeners >= 1e6) return (listeners/1e6).toFixed(1) + 'M listens';
+      if (listeners >= 1e3) return (listeners/1e3).toFixed(1) + 'k listens';
+      return listeners + ' listens';
     }
   </script>
 </body>

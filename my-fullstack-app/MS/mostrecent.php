@@ -80,6 +80,14 @@
       margin: 0 0 0.7rem 0;
       color: #444;
       font-size: 0.97rem;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 1.5em;
+      line-height: 1.5;
     }
     .stats {
       display: flex;
@@ -163,15 +171,17 @@
         let html = '';
         querySnapshot.forEach((doc) => {
           const data = doc.data();
+          const docId = doc.id;  // Get the document ID
           html += `
-            <a class="card" href="${data.audioURL || '#'}" target="_blank" style="text-decoration: none; color: inherit;">
+            <a class="card" href="listen.php?id=${docId}" style="text-decoration: none; color: inherit;">
               <img src="${data.imageURL}" alt="${data.title}" class="podcast-cover" loading="lazy" />
               <div class="card-content">
                 <h3>${data.title}</h3>
                 <p>${data.description || ''}</p>
                 <div class="stats">
                   <span><i class="fas fa-calendar"></i> ${formatDate(data.createdAt)}</span>
-                  <span><i class="fas fa-headphones"></i> ${formatListeners(data.viewCount)}</span>
+                  <span><i class="fas fa-headphones"></i> ${formatListeners(data.listenCount || 0)}</span>
+                  <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0.0'}</span>
                 </div>
               </div>
             </a>

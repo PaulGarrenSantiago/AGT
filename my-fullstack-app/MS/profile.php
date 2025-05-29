@@ -213,25 +213,15 @@
       <div class="profile-info">
         <h1 class="profile-name" id="profile-username">Loading...</h1>
         <p class="profile-bio" id="profile-names">Loading...</p>
-        <div class="profile-stats">
-          <div>
-            <i class="fas fa-user-friends"></i>
-            Following <span id="following-count">0</span>
-          </div>
-          <div>
-            <i class="fas fa-users"></i>
-            Followers <span id="followers-count">0</span>
-          </div>
-        </div>
       </div>
     </div>
   </section>
 
   <section class="content-section">
     <div class="topic-filters">
-      <button class="active" onclick="setActiveFilter(this)">All Topics</button>
-      <button onclick="window.location.href='populartopics.php'">Popular Topics</button>
-      <button onclick="window.location.href='oldesttopics.php'">Oldest Topics</button>
+      <button class="active" onclick="loadUserPodcasts('recent')">All Topics</button>
+      <button onclick="loadUserPodcasts('popular')">Popular Topics</button>
+      <button onclick="loadUserPodcasts('oldest')">Oldest Topics</button>
     </div>
 
     <div class="topics-grid" id="topics-container">
@@ -240,9 +230,9 @@
   </section>
 
   <script>
-    function setActiveFilter(btn) {
+    function setActiveFilter(button) {
       document.querySelectorAll('.topic-filters button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      button.classList.add('active');
     }
 
     // Load user data and topics
@@ -263,24 +253,18 @@
               // Set bio/names
               const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim();
               document.getElementById("profile-names").textContent = fullName || "Update your profile";
-              
-              // Update stats
-              document.getElementById("following-count").textContent = data.following?.length || 0;
-              document.getElementById("followers-count").textContent = data.followers?.length || 0;
 
-              // Load user's podcasts
-              loadUserPodcasts(user.uid);
+              // Load user's podcasts with default sorting (recent)
+              loadUserPodcasts('recent');
             } else {
               // Create user document if it doesn't exist
               firebase.firestore().collection("users").doc(user.uid).set({
                 email: user.email,
                 username: user.displayName || "Username",
                 photoURL: user.photoURL || "img/default-avatar.jpg",
-                following: [],
-                followers: [],
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
               }).then(() => {
-                loadUserPodcasts(user.uid);
+                loadUserPodcasts('recent');
               });
             }
           }).catch(function(error) {
@@ -294,13 +278,42 @@
       });
     });
 
-    function loadUserPodcasts(userId) {
+    function loadUserPodcasts(sortType = 'recent') {
+      const user = firebase.auth().currentUser;
+      if (!user) return;
+
       const topicsContainer = document.getElementById('topics-container');
+      let query = firebase.firestore().collection("podcasts").where("userId", "==", user.uid);
       
-      firebase.firestore().collection("podcasts")
-        .where("userId", "==", userId)
-        .orderBy("createdAt", "desc")
-        .get()
+      // Set the active button
+      const buttons = document.querySelectorAll('.topic-filters button');
+      buttons.forEach(button => {
+        if (
+          (sortType === 'recent' && button.textContent === 'All Topics') ||
+          (sortType === 'popular' && button.textContent === 'Popular Topics') ||
+          (sortType === 'oldest' && button.textContent === 'Oldest Topics')
+        ) {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+      });
+
+      // Apply sorting based on sortType
+      switch(sortType) {
+        case 'popular':
+          query = query.orderBy("listenCount", "desc");
+          break;
+        case 'oldest':
+          query = query.orderBy("createdAt", "asc");
+          break;
+        case 'recent':
+        default:
+          query = query.orderBy("createdAt", "desc");
+          break;
+      }
+      
+      query.get()
         .then((querySnapshot) => {
           topicsContainer.innerHTML = ''; // Clear existing content
           
@@ -326,7 +339,7 @@
             });
 
             const podcastCard = `
-              <div class="topic-card" onclick="window.location.href='view.php?id=${doc.id}'">
+              <a href="listen.php?id=${doc.id}" class="topic-card" style="text-decoration: none; color: inherit;">
                 <img src="${podcast.imageURL || 'img/default-podcast.jpg'}" alt="${podcast.title}">
                 <div class="topic-card-content">
                   <h3 class="topic-card-title">${podcast.title}</h3>
@@ -335,7 +348,7 @@
                     <span><i class="fas fa-headphones"></i> ${podcast.listenCount || 0} listens</span>
                   </div>
                 </div>
-              </div>
+              </a>
             `;
             
             topicsContainer.innerHTML += podcastCard;

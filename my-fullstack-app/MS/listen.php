@@ -6,6 +6,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Listen to Podcast - Anything Goes Tambayan</title>
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,16 +23,18 @@
     .container {
       max-width: 1000px;
       margin: 0 auto;
-      padding: 2rem;
+      padding: 1rem;
+      box-sizing: border-box;
     }
 
     .podcast-header {
       display: flex;
       gap: 2rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       background: rgba(255, 255, 255, 0.1);
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: 12px;
+      flex-wrap: wrap;
     }
 
     .podcast-image {
@@ -39,26 +42,40 @@
       height: 300px;
       object-fit: cover;
       border-radius: 8px;
+      margin: 0 auto;
     }
 
     .podcast-info {
       flex: 1;
+      min-width: 280px;
     }
 
     .podcast-title {
-      font-size: 2rem;
+      font-size: 1.8rem;
       margin: 0 0 1rem 0;
+      line-height: 1.2;
+      word-break: break-word;
     }
 
     .podcast-meta {
       color: #aaa;
       margin-bottom: 1rem;
+      font-size: 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .podcast-meta span {
+      white-space: nowrap;
     }
 
     .podcast-description {
       color: #ddd;
       line-height: 1.6;
       margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      word-break: break-word;
     }
 
     .audio-player {
@@ -68,12 +85,13 @@
 
     .audio-player audio {
       width: 100%;
+      border-radius: 8px;
     }
 
     .uploader-info {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.8rem;
       margin-bottom: 1rem;
     }
 
@@ -87,19 +105,20 @@
     .uploader-name {
       color: #fff;
       font-weight: bold;
+      font-size: 0.95rem;
     }
 
     .interaction-section {
       background: white;
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: 12px;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
       color: #333;
     }
 
     /* Comments specific styles */
     .comments-section {
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
 
     .comment {
@@ -112,8 +131,9 @@
     .comment-header {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.8rem;
       margin-bottom: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .comment-user-avatar {
@@ -126,44 +146,53 @@
     .comment-user-name {
       font-weight: bold;
       color: #0a2c5e;
+      font-size: 0.9rem;
     }
 
     .comment-time {
       color: #666;
-      font-size: 0.9em;
+      font-size: 0.85rem;
       margin-left: auto;
     }
 
     .comment-content {
       color: #333;
       line-height: 1.5;
+      font-size: 0.9rem;
+      word-break: break-word;
     }
 
     .comment-form {
-      margin-top: 2rem;
-      margin-bottom: 2rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
     }
 
     .comment-form textarea {
       width: 100%;
-      min-height: 100px;
-      padding: 1rem;
+      min-height: 80px;
+      padding: 0.8rem;
       border: 1px solid #ddd;
       border-radius: 8px;
       margin-bottom: 1rem;
       font-family: inherit;
       resize: vertical;
+      font-size: 0.9rem;
+      box-sizing: border-box;
     }
 
     .comment-form button {
       background: #0a2c5e;
       color: white;
       border: none;
-      padding: 0.8rem 2rem;
-      border-radius: 4px;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
       transition: background 0.2s;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .comment-form button:hover {
@@ -173,11 +202,11 @@
     .comments-container {
       max-height: 500px;
       overflow-y: auto;
-      padding-right: 1rem;
+      padding-right: 0.8rem;
     }
 
     .comments-container::-webkit-scrollbar {
-      width: 8px;
+      width: 6px;
     }
 
     .comments-container::-webkit-scrollbar-track {
@@ -194,27 +223,6 @@
       background: #555;
     }
 
-    @media (max-width: 768px) {
-      .podcast-header {
-        flex-direction: column;
-      }
-
-      .podcast-image {
-        width: 100%;
-        height: auto;
-      }
-
-      .comment-header {
-        flex-wrap: wrap;
-      }
-
-      .comment-time {
-        width: 100%;
-        margin-left: 0;
-        margin-top: 0.5rem;
-      }
-    }
-
     /* Ensure dropdowns appear above content */
     .dropdown-menu {
       z-index: 1000;
@@ -223,6 +231,118 @@
     nav {
       z-index: 1000;
       position: relative;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0.8rem;
+      }
+
+      .podcast-header {
+        padding: 1rem;
+        gap: 1.5rem;
+      }
+
+      .podcast-image {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        max-width: 400px;
+      }
+
+      .podcast-info {
+        width: 100%;
+      }
+
+      .podcast-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .podcast-meta {
+        font-size: 0.85rem;
+        gap: 0.8rem;
+      }
+
+      .podcast-description {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .interaction-section {
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .comment {
+        padding: 0.8rem;
+      }
+
+      .comment-header {
+        gap: 0.5rem;
+      }
+
+      .comment-time {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 0.3rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0.5rem;
+      }
+
+      .podcast-header {
+        padding: 0.8rem;
+        gap: 1rem;
+      }
+
+      .podcast-title {
+        font-size: 1.3rem;
+      }
+
+      .uploader-info {
+        gap: 0.5rem;
+      }
+
+      .uploader-avatar {
+        width: 32px;
+        height: 32px;
+      }
+
+      .uploader-name {
+        font-size: 0.9rem;
+      }
+
+      .podcast-meta {
+        font-size: 0.8rem;
+        gap: 0.5rem;
+      }
+
+      .comment-form textarea {
+        min-height: 60px;
+        padding: 0.6rem;
+        font-size: 0.85rem;
+      }
+
+      .comment-form button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Touch device optimizations */
+    @media (hover: none) {
+      .comment-form button:hover {
+        background: #0a2c5e;
+      }
+
+      audio::-webkit-media-controls-panel {
+        padding: 0.5rem;
+      }
     }
   </style>
 </head>

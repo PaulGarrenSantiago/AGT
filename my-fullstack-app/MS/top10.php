@@ -49,10 +49,12 @@
     }
 
     .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: flex;
+      flex-direction: column;
       gap: 2rem;
       padding: 0 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
     }
 
     .card {
@@ -64,9 +66,12 @@
       align-items: center;
       position: relative;
       min-height: 160px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0;
       transition: box-shadow 0.3s, transform 0.3s, background 0.3s;
       overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
     }
 
     .card:hover {
@@ -115,9 +120,17 @@
     }
 
     .card p {
-      margin: 0;
-      color: #666;
-      font-size: 1rem;
+      margin: 0 0 0.7rem 0;
+      color: #444;
+      font-size: 0.97rem;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 1.5em;
+      line-height: 1.5;
     }
 
     .card .stats {
@@ -245,7 +258,7 @@
 
     const db = firebase.firestore();
     db.collection("podcasts")
-      .orderBy("viewCount", "desc")
+      .orderBy("listenCount", "desc")
       .limit(10)
       .get()
       .then((querySnapshot) => {
@@ -253,19 +266,21 @@
         let rank = 1;
         querySnapshot.forEach((doc) => {
           const data = doc.data();
+          const docId = doc.id;
           html += `
-            <div class="card${rank <= 3 ? ' top-3' : ''}">
+            <a href="listen.php?id=${docId}" class="card${rank <= 3 ? ' top-3' : ''}">
               <img src="${data.imageURL}" alt="${data.title}" class="podcast-cover" />
               <div class="card-content">
                 <div class="ranking">#${rank}</div>
                 <h3>${data.title}</h3>
                 <p>${data.description || ''}</p>
                 <div class="stats">
-                  <span><i class="fas fa-calendar"></i>${formatDate(data.createdAt)}</span>
-                  <span><i class="fas fa-headphones"></i>${formatListeners(data.viewCount)}</span>
+                  <span><i class="fas fa-calendar"></i> ${formatDate(data.createdAt)}</span>
+                  <span><i class="fas fa-headphones"></i> ${formatListeners(data.listenCount || 0)}</span>
+                  <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0.0'}</span>
                 </div>
               </div>
-            </div>
+            </a>
           `;
           rank++;
         });

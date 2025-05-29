@@ -91,6 +91,13 @@
       color: #444;
       font-size: 0.97rem;
       word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 1.5em;
+      line-height: 1.5;
     }
 
     .stats {
@@ -158,7 +165,9 @@
         // Collect all podcasts
         const podcasts = [];
         querySnapshot.forEach((doc) => {
-          podcasts.push(doc.data());
+          const data = doc.data();
+          data.id = doc.id;  // Save the document ID
+          podcasts.push(data);
         });
 
         // Shuffle array (Fisher-Yates)
@@ -173,14 +182,14 @@
         let html = '';
         discoverPodcasts.forEach((data, idx) => {
           html += `
-            <a class="card" href="${data.audioURL || '#'}" target="_blank" style="text-decoration: none; color: inherit;">
+            <a class="card" href="listen.php?id=${data.id}" style="text-decoration: none; color: inherit;">
               <img src="${data.imageURL}" alt="${data.title}" class="podcast-cover" />
               <div class="card-content">
                 <h3>${data.title}</h3>
                 <p>${data.description || ''}</p>
                 <div class="stats">
                   <span><i class="fas fa-calendar"></i> ${formatDate(data.createdAt)}</span>
-                  <span><i class="fas fa-headphones"></i> ${formatListeners(data.viewCount)}</span>
+                  <span><i class="fas fa-headphones"></i> ${formatListeners(data.listenCount)}</span>
                 </div>
               </div>
             </a>
