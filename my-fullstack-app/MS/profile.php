@@ -339,7 +339,7 @@
             });
 
             const podcastCard = `
-              <div class="topic-card" onclick="window.location.href='view.php?id=${doc.id}'">
+              <a href="listen.php?id=${doc.id}" class="topic-card" style="text-decoration: none; color: inherit;">
                 <img src="${podcast.imageURL || 'img/default-podcast.jpg'}" alt="${podcast.title}">
                 <div class="topic-card-content">
                   <h3 class="topic-card-title">${podcast.title}</h3>
@@ -348,7 +348,7 @@
                     <span><i class="fas fa-headphones"></i> ${podcast.listenCount || 0} listens</span>
                   </div>
                 </div>
-              </div>
+              </a>
             `;
             
             topicsContainer.innerHTML += podcastCard;

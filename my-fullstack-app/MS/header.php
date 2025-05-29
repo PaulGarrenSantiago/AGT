@@ -26,7 +26,7 @@
       height: 70px;
       max-width: 1400px;
       margin: 0 auto;
-      padding: 0 2rem;
+      padding: 0 1rem;
     }
     .logo {
       display: flex;
@@ -37,6 +37,7 @@
       letter-spacing: 1px;
       gap: 0.5rem;
       text-decoration: none;
+      min-width: fit-content;
     }
     .logo i {
       font-size: 2.2rem;
@@ -47,6 +48,7 @@
       justify-content: center;
       align-items: center;
       margin: 0 2rem;
+      position: relative;
     }
     .search-bar input[type="text"] {
       width: 400px;
@@ -76,6 +78,7 @@
       display: flex;
       align-items: center;
       gap: 1.2rem;
+      min-width: fit-content;
     }
     .header-icon-btn {
       background: #f5f5f5;
@@ -104,6 +107,7 @@
       border: 2px solid #eee;
       cursor: pointer;
     }
+
     /* Dropdown Menu Styles */
     .dropdown-menu {
       display: none;
@@ -151,30 +155,79 @@
       color: #1e3a8a;
     }
 
+    /* Mobile Search Toggle */
+    .mobile-search-toggle {
+      display: none;
+    }
+
     @media (max-width: 1024px) {
       .search-bar input[type="text"] {
         width: 300px;
       }
+      .logo span {
+        font-size: 1.5rem;
+      }
     }
 
     @media (max-width: 768px) {
-      .search-bar {
-        margin: 0 1rem;
+      .header-content {
+        padding: 0 0.5rem;
       }
       .search-bar input[type="text"] {
         width: 200px;
       }
-      .header-content {
-        padding: 0 1rem;
+      .logo span {
+        font-size: 1.2rem;
+      }
+      .logo img {
+        height: 40px !important;
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 640px) {
+      .mobile-search-toggle {
+        display: flex;
+      }
       .search-bar {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: white;
+        margin: 0;
+        padding: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         display: none;
       }
+      .search-bar.active {
+        display: flex;
+      }
+      .search-bar input[type="text"] {
+        width: 100%;
+      }
       .logo span {
-        font-size: 0.9rem;
+        display: none;
+      }
+      .header-icons {
+        gap: 0.5rem;
+      }
+      .header-icon-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .header-content {
+        padding: 0 0.3rem;
+      }
+      .logo img {
+        height: 35px !important;
+      }
+      .header-icon-btn {
+        width: 32px;
+        height: 32px;
       }
     }
     </style>
@@ -193,6 +246,9 @@
                 <button id="searchButton"><i class="fas fa-search"></i></button>
             </div>
             <div class="header-icons">
+                <button class="header-icon-btn mobile-search-toggle" id="mobileSearchBtn" title="Search">
+                    <i class="fas fa-search"></i>
+                </button>
                 <button class="header-icon-btn" id="menuBtn" title="Menu"><i class="fas fa-bars"></i></button>
                 <div class="dropdown-menu" id="dropdownMenu" style="right:0;">
                     <a href="category.php"><i class="fas fa-th-large"></i>Category</a>
@@ -222,6 +278,27 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Mobile search toggle
+        const mobileSearchBtn = document.getElementById('mobileSearchBtn');
+        const searchBar = document.querySelector('.search-bar');
+        
+        if (mobileSearchBtn) {
+            mobileSearchBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                searchBar.classList.toggle('active');
+                if (searchBar.classList.contains('active')) {
+                    searchInput.focus();
+                }
+            });
+        }
+
+        // Close search bar when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-bar') && !e.target.closest('.mobile-search-toggle')) {
+                searchBar.classList.remove('active');
+            }
+        });
+
         // Firebase auth state observer
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
@@ -250,12 +327,14 @@
             e.stopPropagation();
             dropdownMenu.classList.toggle('active');
             profileDropdown.classList.remove('active');
+            searchBar.classList.remove('active');
         });
 
         profileBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             profileDropdown.classList.toggle('active');
             dropdownMenu.classList.remove('active');
+            searchBar.classList.remove('active');
         });
 
         // Close dropdowns when clicking outside

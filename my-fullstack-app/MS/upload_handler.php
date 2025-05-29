@@ -56,7 +56,7 @@ try {
     }
 
     // Generate URLs for the files
-    $baseUrl = 'http://localhost/cursor_agt/AGT/my-fullstack-app/MS/';
+    $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https://" : "http://") . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/';
     $audioURL = $baseUrl . $audioFilePath;
     $imageURL = $baseUrl . $imageFilePath;
 

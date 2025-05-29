@@ -1,36 +1,33 @@
 <?php
-  $settings_content = '
-    <div class="main-content">
-      <div class="account-title">
-        <i class="fa fa-user"></i> Account Settings
-      </div>
-      
-      <!-- Profile Section -->
-      <div class="profile-section">
-        <div class="profile-info">
-          <div class="profile-image">
-            <img id="currentPhoto" src="img/profile-placeholder.jpg" alt="Profile Photo">
-            <button class="change-photo-btn">
-              <i class="fas fa-camera"></i>
-              Change Photo
-            </button>
-          </div>
-          <div class="profile-details">
-            <h3 id="displayName">Loading...</h3>
-            <p id="userEmail">Loading...</p>
-            <div class="account-actions">
-              <a href="changeemail.php" class="action-btn">
-                <i class="fas fa-envelope"></i> Change Email
-              </a>
-              <a href="changepassword.php" class="action-btn">
-                <i class="fas fa-key"></i> Change Password
-              </a>
-            </div>
+include 'header.php';
+include 'firebase_init.php';
+
+$settings_content = '
+  <div class="main-content">
+    <div class="account-title">
+      <i class="fa fa-user"></i> Account Settings
+    </div>
+    
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-info">
+        <div class="profile-image">
+          <img id="currentPhoto" src="img/profile-placeholder.jpg" alt="Profile Photo">
+
+        </div>
+        <div class="profile-details">
+          <h3 id="displayName">Loading...</h3>
+          <p id="userEmail">Loading...</p>
+          <div class="account-actions">
+            <a href="changepassword.php" class="action-btn">
+              <i class="fas fa-key"></i> Change Password
+            </a>
           </div>
         </div>
       </div>
     </div>
-  ';
+  </div>
+';
 ?>
 
 <style>
@@ -157,7 +154,6 @@
   }
 </style>
 
-<?php include 'header.php'; ?>
 <?php include 'settings_nav.php'; ?>
 
 <script>

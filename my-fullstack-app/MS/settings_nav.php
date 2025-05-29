@@ -112,13 +112,13 @@
     <div class="sidebar">
       <h2>Settings</h2>
       <div class="nav">
-        <a href="settings.php" class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'selected' : ''; ?>">
+        <a href="settings.php?section=account" class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'selected' : ''; ?>">
           <i class="fa fa-user"></i> Account
         </a>
-        <a href="aboutus.php" class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'aboutus.php' ? 'selected' : ''; ?>">
+        <a href="aboutus.php?section=about" class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'aboutus.php' ? 'selected' : ''; ?>">
           <i class="fa fa-info-circle"></i> About Us
         </a>
-        <a href="contactus.php" class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'contactus.php' ? 'selected' : ''; ?>">
+        <a href="contactus.php?section=contact" class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'contactus.php' ? 'selected' : ''; ?>">
           <i class="fa fa-phone"></i> Contact Us
         </a>
       </div>

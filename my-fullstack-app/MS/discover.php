@@ -91,6 +91,13 @@
       color: #444;
       font-size: 0.97rem;
       word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 1.5em;
+      line-height: 1.5;
     }
 
     .stats {
@@ -182,7 +189,7 @@
                 <p>${data.description || ''}</p>
                 <div class="stats">
                   <span><i class="fas fa-calendar"></i> ${formatDate(data.createdAt)}</span>
-                  <span><i class="fas fa-headphones"></i> ${formatListeners(data.viewCount)}</span>
+                  <span><i class="fas fa-headphones"></i> ${formatListeners(data.listenCount)}</span>
                 </div>
               </div>
             </a>

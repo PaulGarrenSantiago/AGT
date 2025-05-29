@@ -6,6 +6,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upload Podcast - Anything Goes Tambayan</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -25,15 +26,16 @@
 
     .container {
       max-width: 800px;
-      margin: 2rem auto;
+      margin: 1rem auto;
       padding: 0 1rem;
+      box-sizing: border-box;
     }
 
     .upload-section {
       background: white;
       border-radius: 18px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      padding: 2rem;
+      padding: 1.5rem;
       width: 100%;
       box-sizing: border-box;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -46,20 +48,20 @@
 
     .section-title {
       color: var(--text-primary);
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       position: relative;
     }
 
     .section-title::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: -8px;
       left: 50%;
       transform: translateX(-50%);
-      width: 60px;
+      width: 50px;
       height: 3px;
       background: var(--primary-gradient);
       border-radius: 2px;
@@ -67,23 +69,25 @@
 
     .upload-boxes-container {
       display: flex;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .upload-box {
       border: 2.5px dashed #1a6dff;
       border-radius: 12px;
-      padding: 2rem 1.5rem;
+      padding: 1.5rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
       transition: all 0.3s ease;
       background: rgba(26, 109, 255, 0.05);
-      min-height: 180px;
+      min-height: 140px;
       justify-content: center;
       flex: 1;
+      position: relative;
+      overflow: hidden;
     }
 
     #thumbnailZone {
@@ -105,22 +109,24 @@
     }
 
     .upload-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
       transition: transform 0.3s ease;
     }
 
     .upload-text {
       text-align: center;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--text-secondary);
       transition: color 0.3s ease;
+      word-break: break-word;
+      padding: 0 0.5rem;
     }
 
     .form-input {
       width: 100%;
-      padding: 1rem 1.2rem;
-      margin-bottom: 1.2rem;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1rem;
       border: 2px solid #e0e0e0;
       border-radius: 10px;
       font-size: 1rem;
@@ -138,14 +144,19 @@
       box-shadow: 0 4px 15px rgba(26, 109, 255, 0.15);
     }
 
+    textarea.form-input {
+      min-height: 100px;
+      resize: vertical;
+    }
+
     .btn-publish {
       width: 100%;
-      padding: 1rem;
+      padding: 0.8rem;
       border: none;
       border-radius: 10px;
       background: var(--primary-gradient);
       color: #fff;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -153,17 +164,14 @@
       letter-spacing: 1px;
       position: relative;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
-    .btn-publish::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: 0.5s;
+    .btn-publish i {
+      font-size: 1.1rem;
     }
 
     .btn-publish:hover {
@@ -171,12 +179,9 @@
       box-shadow: 0 5px 20px rgba(26, 109, 255, 0.4);
     }
 
-    .btn-publish:hover::before {
-      left: 100%;
-    }
-
     .loading {
       position: relative;
+      color: transparent !important;
     }
 
     .loading::after {
@@ -209,11 +214,12 @@
 
     #uploadStatus {
       text-align: center;
-      margin: 1rem 0;
+      margin: 0.8rem 0;
       padding: 0.8rem;
       border-radius: 10px;
       font-weight: 500;
       display: none;
+      font-size: 0.9rem;
     }
 
     #uploadStatus.error {
@@ -232,27 +238,65 @@
 
     @media (max-width: 768px) {
       .container {
-        margin: 1rem auto;
-        padding: 0 1rem;
+        margin: 0.5rem auto;
       }
 
       .upload-section {
-        padding: 1.5rem;
+        padding: 1rem;
+        border-radius: 12px;
       }
 
+      .section-title {
+        font-size: 1.2rem;
+        margin-bottom: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
       .upload-boxes-container {
         flex-direction: column;
-        gap: 1rem;
       }
 
       .upload-box {
         width: 100%;
-        min-height: 150px;
-        padding: 1.5rem;
+        min-height: 120px;
+        padding: 1rem;
+      }
+
+      .upload-icon {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .upload-text {
+        font-size: 0.85rem;
       }
 
       .form-input {
-        padding: 0.8rem 1rem;
+        padding: 0.7rem 0.9rem;
+        font-size: 0.95rem;
+      }
+
+      .btn-publish {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Touch device optimizations */
+    @media (hover: none) {
+      .upload-section:hover {
+        transform: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      }
+
+      .upload-box {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .btn-publish:hover {
+        transform: none;
+        box-shadow: none;
       }
     }
   </style>

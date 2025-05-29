@@ -80,6 +80,14 @@
       margin: 0 0 0.7rem 0;
       color: #444;
       font-size: 0.97rem;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 1.5em;
+      line-height: 1.5;
     }
     .stats {
       display: flex;
